@@ -19,6 +19,7 @@ library(effects)
 library(corrplot)
 library(ggrepel)
 library(tidyr)
+library(boot)
 
 
 # for correct display of tibbles

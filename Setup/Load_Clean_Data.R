@@ -14,9 +14,9 @@ pg_frame = fread("Datasets/viewcalc_country_year_share.csv")
 DMX = fread("Datasets/DemocracyMatrix_v1_1.csv")
 
 
-CHES = fread("Datasets/2014_CHES_dataset_means.csv") %>% 
+CHES_raw = fread("Datasets/2014_CHES_dataset_means.csv") %>% 
   select(chess = party_id, ch_cname = cname, ch_party_name = party_name, 
-         antielite_salience, lrgen, lrgen_sd)
+         antielite_salience, lrgen)
 
 CHES_expert = fread("Datasets/2014_CHES_dataset_expert-level.csv") %>% 
   mutate(antielite_salience = as.factor(antielite_salience),
@@ -25,13 +25,14 @@ CHES_expert = fread("Datasets/2014_CHES_dataset_expert-level.csv") %>%
                                          "0" = "not important at all"),
          antielite_salience = as.numeric(as.character(antielite_salience))
          ) %>% 
-  group_by(party_id) %>% 
-  summarise(antielite_salience_mean = mean(antielite_salience, na.rm=T),
-            antielite_salience_sd = sd(antielite_salience, na.rm=T)) %>% 
-  rename(chess = party_id)
+  mutate(lrgen = as.factor(lrgen),
+         lrgen = fct_recode(lrgen, 
+                                         "10" = "extreme right",
+                                         "5" = "center",
+                                         "0" = "extreme left"),
+         lrgen = as.numeric(as.character(lrgen))
+  ) 
 
-CHES = CHES %>% 
-  left_join(CHES_expert, by="chess")
 
 # MATCH CHES AND PARLGOV
 
@@ -50,5 +51,3 @@ party_matched = party %>%
   select(-chess) %>% 
   left_join(MatchingList,  by = "party_id") %>% 
   bind_rows(party %>% filter(party_id %!in% MatchingList$party_id) )
-
-  

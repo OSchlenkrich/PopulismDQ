@@ -5,7 +5,6 @@ source("Identify_Populism/Identify_PopulistParties.R")
 source("Setup/MergeDatasets.R")
 
 
-names(DMX_populist)
 Reg = DMX_populist %>% 
   mutate(populist_cabinet = dplyr::lag(if_else(populist_cabinet > 0, 1, 0), 1),
          populist = dplyr::lag(if_else(populist > 0, 1, 0), 1),
@@ -14,14 +13,11 @@ Reg = DMX_populist %>%
          rights_inst_index_context_lag = dplyr::lag(rights_inst_index_context, 1),
          communication_inst_index_context_lag = dplyr::lag(communication_inst_index_context, 1)
          ) %>% 
-  filter(year > 1990) 
-  # filter(country_name != "Turkey") %>% 
+  filter(year > 1990) %>% 
+  # filter(country_name != "Turkey")
   # filter(country_name != "Hungary") %>% 
   # filter(country_name != "Poland")
 
-
-library(plm)
-library(lmtest)
 
 
 test = plm(total_index_context ~ total_index_context_lag +  populist_cabinet + populist_perc_seats  + 
@@ -48,3 +44,4 @@ test = plm(communication_inst_index_context ~ communication_inst_index_context_l
            model="within")
 summary(test)
 coeftest(test, vcov=vcovBK)
+
