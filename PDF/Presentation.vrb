@@ -1,0 +1,13 @@
+\frametitle{Slide with Plot}
+\protect\hypertarget{slide-with-plot}{}
+
+\begin{verbatim}
+## Warning: Removed 2 rows containing missing values (geom_point).
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 2 rows containing missing values (geom_label_repel).
+\end{verbatim}
+
+\includegraphics{Presentation_files/figure-beamer/pressure-1.pdf}
+

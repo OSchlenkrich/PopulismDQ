@@ -20,7 +20,8 @@ library(corrplot)
 library(ggrepel)
 library(tidyr)
 library(boot)
-
+library(knitr)
+library(rmarkdown)
 
 # for correct display of tibbles
 options(crayon.enabled = FALSE)

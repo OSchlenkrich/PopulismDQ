@@ -1,35 +1,40 @@
 ---
 title: "Populist Parties and Quality of Democracy"
-author: "Schlenkrich, Oliver"
-date: "5 6 2019"
-output: beamer_presentation
+author: "Lauth, Hans-Joachim und Schlenkrich, Oliver"
+date: "05.06.2019"
+output: 
+  beamer_presentation:
+    fonttheme: "professionalfonts"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
-## R Markdown
+## Consequences of Populist Rule?
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- Declining Quality of Democracy?
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
 
-## Slide with Bullets
+## Populist Parties per Country: Seat Share
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+```{r pressure, message=FALSE, warning=FALSE}
 
-## Slide with R Output
+populist_yearly %>% 
+  filter(populist == 1, year > 2000)  %>% 
+  group_by(country_name, party_name_short, party_id) %>% 
+  summarise(left_right = mean(left_right, na.rm=T),
+            state_market = mean(state_market, na.rm=T),
+            perc_seats = mean(perc_seats, na.rm=T),
+  ) %>% 
+  ggplot(aes(y=left_right, x=state_market)) +
+  geom_point(aes(size=perc_seats)) + 
+  theme_bw() +
+  scale_size_continuous(name="Seats Share (%)")  +
+  geom_label_repel(aes(label=party_name_short), size = 3) +
+  facet_wrap(country_name ~ .) +
+  ggtitle("Populist Parties per country (Since 2000; Seat Share in Parliament)")
 
-```{r cars, echo = TRUE}
-summary(cars)
-```
-
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
 ```
 
