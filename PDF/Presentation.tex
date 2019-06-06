@@ -81,15 +81,6 @@
   breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
 \newif\ifbibliography
-\usepackage{graphicx,grffile}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -108,21 +99,311 @@
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}{Consequences of Populist Rule?}
-\protect\hypertarget{consequences-of-populist-rule}{}
+\begin{frame}{Consequences of Populist Parties for the Quality of
+Democracy?}
+\protect\hypertarget{consequences-of-populist-parties-for-the-quality-of-democracy}{}
 
 \begin{itemize}
 \tightlist
 \item
-  Declining Quality of Democracy?
+  On the one hand: Broadening of the electorate through inclusion of the
+  ``left behind''
+\item
+  On the other hand: Declining Quality of Democracy due to Authoritarian
+  Populist Rule
+\item
+  \emph{Any References?}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Populist Parties per Country: Seat Share}
-\protect\hypertarget{populist-parties-per-country-seat-share}{}
+\begin{frame}{What is a ``Populist'' Party? How can we measure it?}
+\protect\hypertarget{what-is-a-populist-party-how-can-we-measure-it}{}
 
-\includegraphics{Presentation_files/figure-beamer/pressure-1.pdf}
+\begin{itemize}
+\tightlist
+\item
+  three defining elements:
+
+  \begin{enumerate}
+  \tightlist
+  \item
+    anti-elite rhetoric
+  \item
+    thin ideology
+  \item
+    anti-pluralistic
+  \end{enumerate}
+\item
+  Indicators of Chapel Hill Expert Survey 2014:
+
+  \begin{enumerate}
+  \tightlist
+  \item
+    ``salience of anti-establishment and anti-elite rhetoric'' (0: not
+    important; 10: important)
+  \item
+    ``position of the party in2014in terms of its overall ideological
+    stance'' (0: left; 10: right)
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Distribution of these two variables}
+\protect\hypertarget{distribution-of-these-two-variables}{}
+
+\begin{center}\includegraphics[width=0.75\linewidth,height=0.6\textheight]{PNG/density_CHES} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  anti-elite-salience is right-skewed (more parties without anti-elite
+  rhetoric)
+\item
+  ideological stance is slightly left-skewed (slightly more right-wing
+  parties)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Classification I}
+\protect\hypertarget{classification-i}{}
+
+\begin{center}\includegraphics[width=0.9\linewidth,height=0.7\textheight]{PNG/antielite_CHES} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  vertical line represents threshold
+\item
+  \emph{change 95\% confidence intervals? change threshold placement?}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Classification II}
+\protect\hypertarget{classification-ii}{}
+
+\begin{center}\includegraphics[width=0.9\linewidth,height=0.7\textheight]{PNG/lrgen_CHES} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  vertical lines represents threshold: extremist left parties; extremist
+  right parties
+\item
+  \emph{change 95\% confidence intervals? change thresholds placement?}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Populist Parties per Country}
+\protect\hypertarget{populist-parties-per-country}{}
+
+\begin{center}\includegraphics[width=1\linewidth]{PNG/party_per_country} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  there are a lot of populist parties\ldots{}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Populist Parties per Country: Vote Share}
+\protect\hypertarget{populist-parties-per-country-vote-share}{}
+
+\begin{center}\includegraphics[width=1\linewidth]{PNG/party_per_country_vote} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  \ldots{} but most of them are not relevant
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Populist Parties: Votes and Seats}
+\protect\hypertarget{populist-parties-votes-and-seats}{}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{PNG/party_vote} \includegraphics[width=0.5\linewidth]{PNG/party_seat} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  number of seats and votes for populist parties across european
+  countries is increasing since 1990
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Populist Parties: Cabinets}
+\protect\hypertarget{populist-parties-cabinets}{}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{PNG/party_cabinet} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  populists caputre more cabinet positions (with a spike in 2015)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Populist Parties and Quality of Democracy}
+\protect\hypertarget{populist-parties-and-quality-of-democracy}{}
+
+\begin{center}\includegraphics[width=0.9\linewidth,height=0.7\textheight]{PNG/Total_index_pop.png} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  we examine a mostly slight regression of DQ for some countries since
+  2010 (Turkey; Hungary; Poland; but also for Croatia, Germany, Romania,
+  Sweden, Spain, UK)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{TSCS: Basics}
+\protect\hypertarget{tscs-basics}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Violations of the OLS assumptions by combining cross-sectional and
+  time-series data:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Unit Root
+  \item
+    Serial Correlation
+  \item
+    Unit Heterogeneity
+  \item
+    Panel Heteroskedasticity and Contemporaneous Errors
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{TSCS Regression: Total Value Index}
+\protect\hypertarget{tscs-regression-total-value-index}{}
+
+\begin{table}[!htbp] \centering 
+  \caption{Table of TSCS Results (within-Model; PCSEs)} 
+  \label{} 
+\scriptsize 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & Total Value Index (Context) \\ 
+\hline \\[-1.8ex] 
+ total\_index\_context\_lag & 1.055$^{***}$ (0.038) \\ 
+  & p = 0.000 \\ 
+  populist\_in\_cabinet & 0.002 (0.003) \\ 
+  & p = 0.604 \\ 
+  populist\_percent\_seats & $-$0.010 (0.007) \\ 
+  & p = 0.155 \\ 
+  populist\_is\_prime\_minister & $-$0.013$^{*}$ (0.007) \\ 
+  & p = 0.073 \\ 
+  populist\_party\_exists & $-$0.006$^{**}$ (0.003) \\ 
+  & p = 0.024 \\ 
+ \hline \\[-1.8ex] 
+\multicolumn{2}{l}{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01} \\ 
+\end{tabular} 
+\end{table}
+
+\end{frame}
+
+\begin{frame}{TSCS Regression: Freedom Value Index}
+\protect\hypertarget{tscs-regression-freedom-value-index}{}
+
+\begin{table}[!htbp] \centering 
+  \caption{Table of TSCS Results (within-Model; PCSEs)} 
+  \label{} 
+\scriptsize 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & Freedom Value Index (Context) \\ 
+\hline \\[-1.8ex] 
+ freedom\_dim\_index\_context\_lag & 0.982$^{***}$ (0.036) \\ 
+  & p = 0.000 \\ 
+  populist\_in\_cabinet & 0.001 (0.003) \\ 
+  & p = 0.729 \\ 
+  populist\_percent\_seats & $-$0.009 (0.007) \\ 
+  & p = 0.222 \\ 
+  populist\_is\_prime\_minister & $-$0.011$^{**}$ (0.006) \\ 
+  & p = 0.050 \\ 
+  populist\_party\_exists & $-$0.006$^{**}$ (0.003) \\ 
+  & p = 0.037 \\ 
+ \hline \\[-1.8ex] 
+\multicolumn{2}{l}{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01} \\ 
+\end{tabular} 
+\end{table}
+
+\end{frame}
+
+\begin{frame}{TSCS Regression: Equality Value Index}
+\protect\hypertarget{tscs-regression-equality-value-index}{}
+
+\begin{table}[!htbp] \centering 
+  \caption{Table of TSCS Results (within-Model; PCSEs)} 
+  \label{} 
+\scriptsize 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & Equality Value Index (Context) \\ 
+\hline \\[-1.8ex] 
+ equality\_dim\_index\_context\_lag & 0.968$^{***}$ (0.030) \\ 
+  & p = 0.000 \\ 
+  populist\_in\_cabinet & 0.001 (0.003) \\ 
+  & p = 0.684 \\ 
+  populist\_percent\_seats & $-$0.014$^{*}$ (0.008) \\ 
+  & p = 0.066 \\ 
+  populist\_is\_prime\_minister & $-$0.003 (0.005) \\ 
+  & p = 0.640 \\ 
+  populist\_party\_exists & $-$0.006$^{**}$ (0.002) \\ 
+  & p = 0.024 \\ 
+ \hline \\[-1.8ex] 
+\multicolumn{2}{l}{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01} \\ 
+\end{tabular} 
+\end{table}
+
+\end{frame}
+
+\begin{frame}{TSCS Regression: Control Value Index}
+\protect\hypertarget{tscs-regression-control-value-index}{}
+
+\begin{table}[!htbp] \centering 
+  \caption{Table of TSCS Results (within-Model; PCSEs)} 
+  \label{} 
+\scriptsize 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & Control Value Index (Context) \\ 
+\hline \\[-1.8ex] 
+ control\_dim\_index\_context\_lag & 1.108$^{***}$ (0.047) \\ 
+  & p = 0.000 \\ 
+  populist\_in\_cabinet & 0.003 (0.004) \\ 
+  & p = 0.479 \\ 
+  populist\_percent\_seats & $-$0.014$^{*}$ (0.008) \\ 
+  & p = 0.083 \\ 
+  populist\_is\_prime\_minister & 0.0002 (0.010) \\ 
+  & p = 0.985 \\ 
+  populist\_party\_exists & $-$0.006$^{**}$ (0.003) \\ 
+  & p = 0.035 \\ 
+ \hline \\[-1.8ex] 
+\multicolumn{2}{l}{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01} \\ 
+\end{tabular} 
+\end{table}
+
+\end{frame}
+
+\begin{frame}{References}
+\protect\hypertarget{references}{}
 
 \end{frame}
 

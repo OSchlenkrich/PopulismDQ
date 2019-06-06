@@ -22,6 +22,10 @@ library(tidyr)
 library(boot)
 library(knitr)
 library(rmarkdown)
+library(stargazer)
+library(onehot)
+library(car)
+
 
 # for correct display of tibbles
 options(crayon.enabled = FALSE)

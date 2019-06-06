@@ -9,6 +9,10 @@ cabinets = fread("Datasets/view_cabinet.csv")
 party = fread("Datasets/view_party.csv")
 election = fread("Datasets/view_election.csv")
 
+# party_family = fread("Datasets/party_family.csv")
+# info_id = fread("Datasets/info_id.csv")
+
+
 pg_frame = fread("Datasets/viewcalc_country_year_share.csv")
 
 DMX = fread("Datasets/DemocracyMatrix_v1_1.csv")
@@ -37,7 +41,7 @@ CHES_expert = fread("Datasets/2014_CHES_dataset_expert-level.csv") %>%
 # MATCH CHES AND PARLGOV
 
 party %>% 
-  full_join(CHES, by = "chess") %>% 
+  full_join(CHES_raw, by = "chess") %>% 
   filter(is.na(country_name_short) == T) %>% 
   select(ch_party_name, chess) %>% 
   write.csv2(file="Datasets/MatchingList.csv", row.names = F)
@@ -51,3 +55,9 @@ party_matched = party %>%
   select(-chess) %>% 
   left_join(MatchingList,  by = "party_id") %>% 
   bind_rows(party %>% filter(party_id %!in% MatchingList$party_id) )
+
+# V-Dem Dataset
+
+V_dem = fread("C:/RTest/V-Dem-CY+Others-v8.csv", encoding = "UTF-8") %>% 
+  select(country_name, year, gdp_growth = e_migdpgro, v2csantimv)
+
