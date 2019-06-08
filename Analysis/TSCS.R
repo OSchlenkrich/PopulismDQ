@@ -30,20 +30,14 @@ TSCS_data = DMX_populist %>%
          equality_dim_index_context_lag = dplyr::lag(equality_dim_index_context, 1),
          control_dim_index_context_lag = dplyr::lag(control_dim_index_context, 1),
          
+         communication_control_context_lag = dplyr::lag(communication_control_context, 1),
+         
          ) %>% 
-  filter(year > 2000) 
+  filter(year >= 2000) %>% 
+  mutate(trend = year - min(year)) 
   # filter(country_name != "Turkey")
-  # filter(country_name != "Hungary") %>% 
+  # filter(country_name != "Hungary") 
   # filter(country_name != "Poland")
-
-# Correlation
-library(corrplot)
-TSCS_data %>% 
-  ungroup() %>% 
-  select_at(vars(ends_with("lag"), -matches("context"))) %>% 
-  cor(use="pairwise") %>% 
-  corrplot(method="shade", order="hclust")
-
 
 # Create Country Dummies
 mydummies = onehot(data.frame(TSCS_data$country_name), max_levels = 40)
@@ -54,6 +48,15 @@ dummies_string = TSCS_data %>%
   select_at(vars(matches("country_name."))) %>% 
   names() %>% 
   paste(collapse = " + ")
+
+
+# Correlation
+library(corrplot)
+TSCS_data %>% 
+  ungroup() %>% 
+  select_at(vars(ends_with("lag"), -matches("context"))) %>% 
+  cor(use="pairwise") %>% 
+  corrplot(method="shade", order="hclust")
 
 
 ## VIF
@@ -94,14 +97,30 @@ total_value_m_w = plm(my_tscs_formula,
 summary(total_value_m_w)
 coeftest(total_value_m_w, vcov=vcovBK)
 
+# Dynsim
 
-sc1 = dynamicSim(total_value_m_w, 10, 
+my_tscs_formula = as.formula(paste("total_index_context ~ -1 + 
+          total_index_context_lag + 
+          populist_in_cabinet_lag + 
+          populist_percent_seats_lag  + 
+          populist_is_prime_minister_lag + 
+          populist_party_exists_lag +
+          gdp_growth_lag +", dummies_string, collapse=" + "))
+
+
+total_value_m_w_dynsim = plm(my_tscs_formula, 
+                             index=c("country_name", "year"), 
+                             as.data.frame(TSCS_data),
+                             model="pooling")
+coeftest(total_value_m_w_dynsim, vcov=vcovBK)
+
+sc1 = dynamicSim(total_value_m_w_dynsim, 10, 
                  "populist_is_prime_minister_lag", 1, 
-                 "freedom_dim_index_context_lag",
+                 "total_index_context_lag",
                  "Prime Minister 1")
-sc2 = dynamicSim(total_value_m_w, 10, 
+sc2 = dynamicSim(total_value_m_w_dynsim, 10, 
                  "populist_is_prime_minister_lag", 0, 
-                 "freedom_dim_index_context_lag",
+                 "total_index_context_lag",
                  "Prime Minister 0")
 
 sc1 %>% 
@@ -109,14 +128,17 @@ sc1 %>%
   ggplot(aes(x = x, y=y_mean, ymin=y_min, ymax=y_max, fill=Scenario)) +
   geom_line() +
   geom_ribbon(alpha=0.5) +
-  theme_bw()
+  theme_bw() +
+  scale_y_continuous(name = "Total Value Index (Context)", limits = c(0,1), breaks=seq(0,1,0.2)) +
+  scale_x_continuous(name="t", breaks=seq(0,10, 1)) +
+  ggtitle("Dynamic Simulation")
 
 #
-
 
 # Freedom Value Index
 my_tscs_formula = as.formula(paste("freedom_dim_index_context ~ -1 + 
           freedom_dim_index_context_lag + 
+          trend +
           populist_in_cabinet_lag + 
           populist_percent_seats_lag  + 
           populist_is_prime_minister_lag +
@@ -186,6 +208,7 @@ coeftest(equality_value_m_w, vcov=vcovBK)
 # Control Value Index
 my_tscs_formula = as.formula(paste("control_dim_index_context ~ -1 + 
           control_dim_index_context_lag + 
+          trend +
           populist_in_cabinet_lag + 
           populist_percent_seats_lag  + 
           populist_is_prime_minister_lag +
@@ -212,6 +235,7 @@ coeftest(control_value_m_w, vcov=vcovBK)
 # Rule Settlement Value Index
 my_tscs_formula = as.formula(paste("rule_settlement_inst_index_context ~ -1 + 
           rule_settlement_inst_index_context_lag + 
+          trend +
           populist_in_cabinet_lag + 
           populist_percent_seats_lag  + 
           populist_is_prime_minister_lag +
