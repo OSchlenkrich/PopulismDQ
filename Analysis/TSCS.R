@@ -16,7 +16,8 @@ TSCS_data = DMX_populist %>%
          populist_r = dplyr::lag(if_else(populist_r > 0, 1, 0), 1),
          
          gdp_growth_lag = dplyr::lag(gdp_growth, 1),
-
+         v2csantimv_lag = dplyr::lag(v2csantimv, 1),
+         
          populist_is_prime_minister_lag = dplyr::lag(if_else(populist_prime_minister > 0, 1, 0), 1),
          
          total_index_context_lag = dplyr::lag(total_index_context, 1),
@@ -30,12 +31,31 @@ TSCS_data = DMX_populist %>%
          equality_dim_index_context_lag = dplyr::lag(equality_dim_index_context, 1),
          control_dim_index_context_lag = dplyr::lag(control_dim_index_context, 1),
          
+         decision_freedom_context_lag = dplyr::lag(decision_freedom_context, 1),
+         decision_equality_context_lag = dplyr::lag(decision_equality_context, 1),
+         decision_control_context_lag = dplyr::lag(decision_control_context, 1),
+         
+         intermediate_freedom_context_lag = dplyr::lag(intermediate_freedom_context, 1),
+         intermediate_equality_context_lag = dplyr::lag(intermediate_equality_context, 1),
+         intermediate_control_context_lag = dplyr::lag(intermediate_control_context, 1),
+         
+         communication_freedom_context_lag = dplyr::lag(communication_freedom_context, 1),
+         communication_equality_context_lag = dplyr::lag(communication_equality_context, 1),
          communication_control_context_lag = dplyr::lag(communication_control_context, 1),
+         
+         rights_freedom_context_lag = dplyr::lag(rights_freedom_context, 1),
+         rights_equality_context_lag = dplyr::lag(rights_equality_context, 1),
+         rights_control_context_lag = dplyr::lag(rights_control_context, 1),
+         
+         rule_settlement_freedom_context_lag = dplyr::lag(rule_settlement_freedom_context, 1),
+         rule_settlement_equality_context_lag = dplyr::lag(rule_settlement_equality_context, 1),
+         rule_settlement_control_context_lag = dplyr::lag(rule_settlement_control_context, 1),
+         
          
          ) %>% 
   filter(year >= 2000) %>% 
-  mutate(trend = year - min(year)) 
-  # filter(country_name != "Turkey")
+  mutate(trend = year - min(year)) %>% 
+  filter(country_name != "Turkey")
   # filter(country_name != "Hungary") 
   # filter(country_name != "Poland")
 
@@ -49,6 +69,14 @@ dummies_string = TSCS_data %>%
   names() %>% 
   paste(collapse = " + ")
 
+# See NAs
+data.frame(variables=names(TSCS_data), missings = dim(TSCS_data)[1]-describe(TSCS_data)$n) %>% 
+  filter(missings != 0) %>% 
+  mutate(variables = fct_reorder(variables, -missings)) %>% 
+  ggplot(aes(x=variables, y=missings)) +
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle=90))
+
 
 # Correlation
 library(corrplot)
@@ -57,6 +85,14 @@ TSCS_data %>%
   select_at(vars(ends_with("lag"), -matches("context"))) %>% 
   cor(use="pairwise") %>% 
   corrplot(method="shade", order="hclust")
+
+# Overview Data
+
+table(TSCS_data$country_name,
+      TSCS_data$populist_is_prime_minister_lag)
+table(TSCS_data$country_name,
+      TSCS_data$populist_in_cabinet_lag)
+
 
 
 ## VIF

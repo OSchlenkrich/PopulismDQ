@@ -20,7 +20,7 @@ DMX = fread("Datasets/DemocracyMatrix_v1_1.csv")
 
 CHES_raw = fread("Datasets/2014_CHES_dataset_means.csv") %>% 
   select(chess = party_id, ch_cname = cname, ch_party_name = party_name, 
-         antielite_salience, lrgen)
+         antielite_salience, lrgen, eu_position)
 
 CHES_expert = fread("Datasets/2014_CHES_dataset_expert-level.csv") %>% 
   mutate(antielite_salience = as.factor(antielite_salience),
