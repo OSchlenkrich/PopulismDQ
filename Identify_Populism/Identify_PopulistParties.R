@@ -84,7 +84,7 @@ ggsave("PDF/PNG/density_CHES.png",plot=density_CHES)
 
 CHES = CHES %>% 
   mutate(
-    populist = if_else( antielite_salience_upper >= 6 & lrgen_lower <= 9 & lrgen_upper >= 1, 1, 0),
+    populist = if_else( antielite_salience_upper >= 7 & lrgen_lower <= 9 & lrgen_upper >= 1, 1, 0),
     populist_l = if_else(populist == 1 & lrgen_mean <= 5, 1, 0),
     populist_r = if_else(populist == 1 & lrgen_mean > 5, 1, 0),
   )

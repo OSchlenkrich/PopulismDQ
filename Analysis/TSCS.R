@@ -3,24 +3,33 @@ source("Setup/basicfunctions.R")
 source("Setup/Load_Clean_Data.R")
 source("Identify_Populism/Identify_PopulistParties.R")
 source("Setup/MergeDatasets.R")
-source("Analysis/Plots_Populism.R")
-
+#source("Analysis/Plots_Populism.R")
 
 TSCS_data = DMX_populist %>% 
   mutate(populist_in_cabinet_lag = dplyr::lag(if_else(populist_cabinet > 0, 1, 0), 1),
+         populist_in_cabinet = if_else(populist_cabinet > 0, 1, 0),
          populist_party_exists_lag = dplyr::lag(if_else(populist > 0, 1, 0), 1),
          
-         populist_percent_seats_lag = dplyr::lag(if_else(populist_perc_seats > 1, 1, populist_perc_seats),1),
+         populist_perc_seats_lag = dplyr::lag(if_else(populist_perc_seats > 1, 1, populist_perc_seats),1),
+         populist_perc_seats = if_else(populist_perc_seats > 1, 1, populist_perc_seats),
          
          populist_l = dplyr::lag(if_else(populist_l > 0, 1, 0), 1),
          populist_r = dplyr::lag(if_else(populist_r > 0, 1, 0), 1),
          
+         
+         populist_vote_share_tr = if_else(populist_vote_share > 10, 10, populist_vote_share),
+         populist_vote_share_tr_lag = dplyr::lag(populist_vote_share_tr, 1),
+         
+         
          gdp_growth_lag = dplyr::lag(gdp_growth, 1),
          v2csantimv_lag = dplyr::lag(v2csantimv, 1),
          
+         
          populist_is_prime_minister_lag = dplyr::lag(if_else(populist_prime_minister > 0, 1, 0), 1),
+         populist_is_prime_minister = if_else(populist_prime_minister > 0, 1, 0),
          
          total_index_context_lag = dplyr::lag(total_index_context, 1),
+         
          decision_inst_index_context_lag = dplyr::lag(decision_inst_index_context, 1),
          intermediate_inst_index_context_lag = dplyr::lag(intermediate_inst_index_context, 1),
          communication_inst_index_context_lag = dplyr::lag(communication_inst_index_context, 1),
@@ -50,14 +59,14 @@ TSCS_data = DMX_populist %>%
          rule_settlement_freedom_context_lag = dplyr::lag(rule_settlement_freedom_context, 1),
          rule_settlement_equality_context_lag = dplyr::lag(rule_settlement_equality_context, 1),
          rule_settlement_control_context_lag = dplyr::lag(rule_settlement_control_context, 1),
-         
-         
+        
          ) %>% 
-  filter(year >= 2000) %>% 
-  mutate(trend = year - min(year)) %>% 
-  filter(country_name != "Turkey")
-  # filter(country_name != "Hungary") 
+  filter(year >= 1990) %>% 
+  mutate(trend = year - min(year))
+  # filter(country_name != "Turkey") %>% 
+  # filter(country_name != "Hungary") %>% 
   # filter(country_name != "Poland")
+
 
 # Create Country Dummies
 mydummies = onehot(data.frame(TSCS_data$country_name), max_levels = 40)
@@ -109,12 +118,12 @@ vif(vif_test)
 
 
 # Total Value Index
-my_tscs_formula = as.formula(paste("total_index_context ~ -1 + 
-          total_index_context_lag + 
+my_tscs_formula = as.formula(paste("control_dim_index_context_df ~ -1 + 
+          control_dim_index_context_lag +
+          trend +
           populist_in_cabinet_lag + 
           populist_percent_seats_lag  + 
           populist_is_prime_minister_lag + 
-          populist_party_exists_lag +
           gdp_growth_lag + ", dummies_string, collapse=" + "))
 
 
@@ -135,12 +144,9 @@ coeftest(total_value_m_w, vcov=vcovBK)
 
 # Dynsim
 
-my_tscs_formula = as.formula(paste("total_index_context ~ -1 + 
-          total_index_context_lag + 
-          populist_in_cabinet_lag + 
-          populist_percent_seats_lag  + 
-          populist_is_prime_minister_lag + 
-          populist_party_exists_lag +
+my_tscs_formula = as.formula(paste("communication_control_context ~ -1 + 
+          communication_control_context_lag + 
+          populist_perc_seats_lag  + 
           gdp_growth_lag +", dummies_string, collapse=" + "))
 
 
@@ -149,15 +155,15 @@ total_value_m_w_dynsim = plm(my_tscs_formula,
                              as.data.frame(TSCS_data),
                              model="pooling")
 coeftest(total_value_m_w_dynsim, vcov=vcovBK)
-
+quantile(TSCS_data$populist_perc_seats_lag, c(0.05, 0.95), na.rm=T)
 sc1 = dynamicSim(total_value_m_w_dynsim, 10, 
-                 "populist_is_prime_minister_lag", 1, 
-                 "total_index_context_lag",
-                 "Prime Minister 1")
+                 "communication_control_context_lag", 0.5384615, 
+                 "populist_perc_seats_lag",
+                 "populist_perc_seats_lag high")
 sc2 = dynamicSim(total_value_m_w_dynsim, 10, 
-                 "populist_is_prime_minister_lag", 0, 
-                 "total_index_context_lag",
-                 "Prime Minister 0")
+                 "communication_control_context_lag", 0, 
+                 "populist_perc_seats_lag",
+                 "populist_perc_seats_lag low")
 
 sc1 %>% 
   bind_rows(sc2) %>% 
