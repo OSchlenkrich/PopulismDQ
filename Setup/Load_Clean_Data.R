@@ -5,19 +5,21 @@ source("Setup/basicfunctions.R")
 
 
 # Load All Datasets
+
+# ParlGov
 cabinets = fread("Datasets/view_cabinet.csv")
 party = fread("Datasets/view_party.csv")
 election = fread("Datasets/view_election.csv")
-
 # party_family = fread("Datasets/party_family.csv")
 # info_id = fread("Datasets/info_id.csv")
-
-
 pg_frame = fread("Datasets/viewcalc_country_year_share.csv")
 
+
+# DMX
 DMX = fread("Datasets/DemocracyMatrix_v1_1.csv")
 
 
+# CHES
 CHES_raw = fread("Datasets/2014_CHES_dataset_means.csv") %>% 
   select(chess = party_id, ch_cname = cname, ch_party_name = party_name, 
          antielite_salience, lrgen, eu_position)
@@ -60,4 +62,17 @@ party_matched = party %>%
 
 V_dem = fread("C:/RTest/V-Dem-CY+Others-v8.csv", encoding = "UTF-8") %>% 
   select(country_name, year, gdp_growth = e_migdpgro, v2csantimv)
+
+# Own Dataset
+pop_par_pres = fread("Datasets/Populistische Parteien_Praesidenten.csv", encoding = "UTF-8") %>% 
+  mutate(populist = 1,
+         `Start Regierungsbeteiligung` = if_else(president_primeminister == "Nicolás Maduro", as.integer(2014), `Start Regierungsbeteiligung`))
+
+
+# ParlGov and Own Dataset
+
+party_matched_own = party %>% 
+  left_join(pop_par_pres %>%  select(party_id = party_id_parlgov, populist), by="party_id") %>% 
+  mutate(populist = if_else(is.na(populist) == T, 0, 1))
+  
 
