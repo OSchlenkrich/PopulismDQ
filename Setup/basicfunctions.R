@@ -183,3 +183,32 @@ vis_15_Felder <- function(country_sel, year_used, radio, dataset) {
   return(plot_heat_ma)
   
 }
+
+
+#
+
+Make_formula = function(variable) {
+  raw_formula = paste("placeholder ~ 1 + 
+          country_name +
+          placeholder_lag +
+          trend +
+          pop_cat +
+          pop_cat_lag", collapse=" + ")
+  
+  my_tscs_formula = as.formula(gsub("placeholder", variable, raw_formula))
+  
+  return(my_tscs_formula)
+}
+
+
+Make_formulaAR = function(variable) {
+  raw_formula = paste("placeholder ~ 1 + 
+          country_name +
+          trend +
+          pop_cat +
+          pop_cat_lag", collapse=" + ")
+  
+  my_tscs_formula = as.formula(gsub("placeholder", variable, raw_formula))
+  
+  return(my_tscs_formula)
+}

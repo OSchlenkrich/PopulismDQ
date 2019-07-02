@@ -60,7 +60,7 @@ DMX_context = DMX %>%
 
 ## Presidential Systems
 pop_pres = pop_par_pres %>% 
-  select(country_name, pop_start = `Start Regierungsbeteiligung`, pop_end = `Ende Regierungsbeteiligung`) %>% 
+  select(country_name, pop_start, pop_end) %>% 
   mutate(pop_end = if_else(is.na(pop_start) == F & is.na(pop_end) == T, as.integer(2018), pop_end)) %>% 
   na.omit() %>% 
   melt(by="country_name") %>% 
@@ -79,15 +79,16 @@ DMX_populist = DMX_context %>%
   left_join(populist_yearly_mean_cabinet, by=c("country_name", "year")) %>%
   left_join(populist_yearly_mean_prime_minister, by=c("country_name", "year"))  %>%
   left_join(pop_pres, by=c("country_name", "year")) %>%  
-  mutate(pop_gov = if_else(populist_prime_minister == 1 | populist_pres == 1,1,0),
-         pop_gov = if_else(is.na(pop_gov) == T, 0, pop_gov)) %>% 
+  mutate(populist_is_gov = if_else(populist_prime_minister == 1 | populist_pres == 1,1,0),
+         populist_is_gov = if_else(is.na(populist_is_gov) == T, 0, populist_is_gov)) %>% 
   left_join(V_dem, by=c("country_name", "year")) 
   
+
 # Select Only Countries with at least one populist party in history
 
 Pop_Countries = DMX_populist %>% 
   ungroup() %>% 
-  filter(populist == 1 | pop_gov == 1) %>% 
+  filter(populist == 1 | populist_is_gov == 1) %>% 
   distinct(country_name) %>% 
   pull(country_name)
 

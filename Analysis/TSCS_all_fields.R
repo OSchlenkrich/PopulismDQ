@@ -6,7 +6,7 @@ Unit_Response = function(variable, coef_mat, Time = 11, x=1) {
   
   results = array(NA, Time)
   results[1] = 0
-  results[2] = sum(0 * y + coef_mat[coef,1]%*%c(x, x_lag))
+  results[2] = sum(0* y + coef_mat[coef,1]%*%c(x, x_lag))
   
   x_lag = x
   

@@ -1,90 +1,90 @@
 country_name,party_name,party_id_parlgov,president_primeminister,Start Regierungsbeteiligung,Ende Regierungsbeteiligung,"source
-"
-Argentina ,,NA,Juan Perón,1946,1955,De La Torre 2017; Pappas 2019
-Argentina ,,NA,Eva Perón,,,De La Torre 2017
-Argentina ,,NA,Carlos Menem,,,De La Torre 2017
-Australia,One Nation Party,386,,,,Moffitt 2017
-Australia,Katter’s Australian Party,2258,,,,Moffitt 2017
-Australia,Palmer United Party (PUP),2259,,,,Moffitt 2017
-Australia,Jacqui Lambie Network,NA,,,,Moffitt 2017
-Austria,Freedom Party (FPÖ),50,,,,Taggart 2017
-Belgium,Flemish Block,993,,,,Taggart 2017
-Bolivien,,NA,Evo Morales,2006,,Ruth-Lovell 2019; De La Torre 2017
-Brazil,,NA,Jair Bolsonaro,2018,,Ruth-Lovell 2019
-Brazil,,,Getulio Vargas,,,De La Torre 2017
-Brazil,,,Fernando Collor de Mello,,,De La Torre 2017
-Bulgaria,"Bulgarian National Radical Party (Bălgarska nacionalnaradikalna partija, BNRP)",364,,,,Stanley 2017
-Bulgaria,"National Union Attack (Natsionalen Sayuz Ataka, ATAKA)",535,,,,Stanley 2017
-Canada,Reform Party,897,,,,Mudde/Kaltwasser 2012
-Chile,,NA,No populist government,,,De La Torre 2017
-Colombia,,NA,No populist government,,,De La Torre 2017
-Costa Rica,,NA,No populist government,,,De La Torre 2017
-Croatia,-,NA,,,,
-Cyprus,-,NA,,,,
-Czech Republic,"Republican Party of Czechoslovakia (Sdruženi pro republiku—Republikánska strana Československa, SPR-RSČ)",872,,,,Stanley 2017
-Czech Republic,"Dawn of Direct Democracy(Úsvit přímé demokracie, ÚSVIT)",2262,,,,Stanley 2017
-Czech Republic,"Public Affairs (Věci veřejné, VV)",336,,,,Stanley 2017
-Denmark,Progress Party,978,,,,Taggart 2017
-Denmark,Danish People’s Party,1418,,,,Taggart 2017
-Ecuador,,NA,Rafael Correa,2007,2016,Ruth-Lovell 2019; De La Torre 2017
-Ecuador,,,José María Velasco Ibarra,,,De La Torre 2017
-Ecuador,,,Abdalá Bucaram,,,De La Torre 2017
-Estonia,"National Independence Party (Eesti Rahvusliku Sõltumatuse Partei, ERSP)",552,,,,Stanley 2017
-Estonia,"Res Publica (Erakond Res Publica, RP)",428,,,,Stanley 2017
-Finland,Rural Party,NA,,,,Taggart 2017
-Finland,The Finns,200,,,,Taggart 2017
-France,Front National,270,,,,Taggart 2017
-Germany,Left Party,791,,,,Taggart 2017
-Germany,Alternative for Germany,2253,,,,Taggart 2017
-Greece,PASOK,1338,,1981,1989,Pappas 2019
-Greece,New Democracy,47,,,,Pappas 2019
-Greece,ANEL,2091,,,,Pappas 2019
-Greece,SYRIZA,1592,,,,Taggart 2017
-Hungary,Fidesz -- Hungarian Civic Party / Christian Democratic People,437,,,,Stanley 2017
-Hungary,Fidesz -- Hungarian Civic Union,921,,,,Stanley 2017
-Hungary,"Movement for a Better Hungary (Jobbik MagyarországértMozgalom, Jobbik)",600,,,,Stanley 2017
-India,Bharatiya Janata Party,,Narendra Modi,2014,,
-Ireland,-,NA,,,,
-Italy,Forza Italia – Il Popolo della Libertà,596,Silvio Berlusconi,,,Albertazzi/Müller 2013
-Italy,Five Star Movement,2155,,,,Taggart 2017
-Italy,North League,1436,,,,Taggart 2017
-Latvia,National Alliance / For Fatherland and Freedom / LNNK,521,,,,Stanley 2017
-Latvia,"For Fatherland and Freedom (Tēvzemei un Brīvībai, TB)",203,,,,Stanley 2017
-Lithuania,"Labour Party (Darbo Partija, DP)",581,,,,Stanley 2017
-Luxembourg,-,NA,,,,
-Malta,-,NA,,,,
-Mexico,,NA,Andrés Manuel López Obrador,2018,,Ruth-Lovell 2019
-Netherlands,List Pim Fortuyn,456,,,,Taggart 2017
-Netherlands,Freedom Party,1501,,,,Taggart 2017
-New Zealand,New Zealand First,891,,,,Moffitt 2017
-Nicaragua,,NA,Daniel Ortega,2007,,Ruth-Lovell 2019
-Norway,Progress Party,351,,,,Taggart 2017
-Peru,,NA,Alberto Fujimori,1990,2000,Pappas 2019; Ruthl-Lovell 2019
-Peru,,NA,Victor Raúl Haya de la Torre,,,De La Torre 2017
-Poland,Self-Defence,207,,,,Albertazzi/Müller 2013
-Poland,League of Polish Families,987,,,,Albertazzi/Müller 2013
-Poland,PiS - Law and Justice,528,,,,Stanley 2017
-Portugal,-,NA,,,,
-Romania,"Greater Romania Party (Partidul România Mare, PRM)",713,,,,Stanley 2017
-Romania,"National Unity Party (Partidul de UniuneNaţională a Românilor, PUNR)",648,,,,Stanley 2017
-Romania,"People’s Party—Dan Diaconescu (Partidul Poporului—Dan Diaconescu,PP-DD)",2130,,,,Stanley 2017
-Slovakia,"Party of Civic Understanding (Strana občianskeho porozumenia, SOP)",1016,,,,Stanley 2017
-Slovakia,"Union of the Workers of Slovakia (Združenie robotníkovSlovenska, ZRS)",1563,,,,Stanley 2017
-Slovakia,"Movement for a Democratic Slovakia (Ľudová strana—Hnutie za demokratické Slovensko, ĽS-HZDS or HZDS",1142,,,,Stanley 2017
-Slovakia,"Alliance of the New Citizen (Aliancia Nového Občana, ANO)",1200,,,,Stanley 2017
-Slovakia,"Slovak National Party (Slovenskánárodná strana, SNS)",1072,,,,Stanley 2017
-Slovakia,"Direction–SocialDemocracy (Smer–sociálna demokracia, Smer-SD—commonly known as SMER)",220,,,,Stanley 2017
-Slovenia,"National Right (Slovenska nacionalnadesnica, SND)",NA,,,,Stanley 2017
-Slovenia,"Slovenian National Party (Slovenskanacionalna stranka, SNS)",981,,,,Stanley 2017
-Spain,Unidas Podemos,2724,,,,Taggart 2017
-Spain,Podemos,2376,,,,Taggart 2017
-Sweden,Sweden Democrats,1546,,,,Taggart 2017
+",comment
+Argentina ,,NA,Juan Perón,1946,1955,De La Torre 2017; Pappas 2019,
+Argentina ,,NA,Eva Perón,,,De La Torre 2017,
+Argentina ,,NA,Carlos Menem,,,De La Torre 2017,
+Australia,One Nation Party,386,,,,Moffitt 2017,
+Australia,Katter’s Australian Party,2258,,,,Moffitt 2017,
+Australia,Palmer United Party (PUP),2259,,,,Moffitt 2017,
+Australia,Jacqui Lambie Network,NA,,,,Moffitt 2017,
+Austria,Freedom Party (FPÖ),50,,,,Taggart 2017,
+Belgium,Flemish Block,993,,,,Taggart 2017,
+Bolivien,,NA,Evo Morales,2006,,Ruth-Lovell 2019; De La Torre 2017,
+Brazil,,NA,Jair Bolsonaro,2018,,Ruth-Lovell 2019,
+Brazil,,,Getulio Vargas,,,De La Torre 2017,
+Brazil,,,Fernando Collor de Mello,,,De La Torre 2017,
+Bulgaria,"Bulgarian National Radical Party (Bălgarska nacionalnaradikalna partija, BNRP)",364,,,,Stanley 2017,
+Bulgaria,"National Union Attack (Natsionalen Sayuz Ataka, ATAKA)",535,,,,Stanley 2017,
+Canada,Reform Party,897,,,,Mudde/Kaltwasser 2012,
+Chile,,NA,No populist government,,,De La Torre 2017,
+Colombia,,NA,No populist government,,,De La Torre 2017,
+Costa Rica,,NA,No populist government,,,De La Torre 2017,
+Croatia,-,NA,,,,,
+Cyprus,-,NA,,,,,
+Czech Republic,"Republican Party of Czechoslovakia (Sdruženi pro republiku—Republikánska strana Československa, SPR-RSČ)",872,,,,Stanley 2017,
+Czech Republic,"Dawn of Direct Democracy(Úsvit přímé demokracie, ÚSVIT)",2262,,,,Stanley 2017,
+Czech Republic,"Public Affairs (Věci veřejné, VV)",336,,,,Stanley 2017,
+Denmark,Progress Party,978,,,,Taggart 2017,
+Denmark,Danish People’s Party,1418,,,,Taggart 2017,
+Ecuador,,NA,Rafael Correa,2007,2016,Ruth-Lovell 2019; De La Torre 2017,
+Ecuador,,,José María Velasco Ibarra,,,De La Torre 2017,
+Ecuador,,,Abdalá Bucaram,,,De La Torre 2017,
+Estonia,"National Independence Party (Eesti Rahvusliku Sõltumatuse Partei, ERSP)",552,,,,Stanley 2017,
+Estonia,"Res Publica (Erakond Res Publica, RP)",428,,,,Stanley 2017,
+Finland,Rural Party,NA,,,,Taggart 2017,
+Finland,The Finns,200,,,,Taggart 2017,
+France,Front National,270,,,,Taggart 2017,
+Germany,Left Party,791,,,,Taggart 2017,
+Germany,Alternative for Germany,2253,,,,Taggart 2017,
+Greece,PASOK,1338,,1981,1989,Pappas 2019,
+Greece,New Democracy,47,,,,Pappas 2019,
+Greece,ANEL,2091,,,,Pappas 2019,
+Greece,SYRIZA,1592,,,,Taggart 2017,
+Hungary,Fidesz -- Hungarian Civic Party / Christian Democratic People,437,,,,Stanley 2017,
+Hungary,Fidesz -- Hungarian Civic Union,921,,,,Stanley 2017,
+Hungary,"Movement for a Better Hungary (Jobbik MagyarországértMozgalom, Jobbik)",600,,,,Stanley 2017,
+India,Bharatiya Janata Party,,Narendra Modi,2014,,,
+Ireland,-,NA,,,,,
+Italy,Forza Italia – Il Popolo della Libertà,596,Silvio Berlusconi,,,Albertazzi/Müller 2013,
+Italy,Five Star Movement,2155,,,,Taggart 2017,
+Italy,North League,1436,,,,Taggart 2017,
+Latvia,National Alliance / For Fatherland and Freedom / LNNK,521,,,,Stanley 2017,
+Latvia,"For Fatherland and Freedom (Tēvzemei un Brīvībai, TB)",203,,,,Stanley 2017,
+Lithuania,"Labour Party (Darbo Partija, DP)",581,,,,Stanley 2017,
+Luxembourg,-,NA,,,,,
+Malta,-,NA,,,,,
+Mexico,,NA,Andrés Manuel López Obrador,2018,,Ruth-Lovell 2019,
+Netherlands,List Pim Fortuyn,456,,,,Taggart 2017,
+Netherlands,Freedom Party,1501,,,,Taggart 2017,
+New Zealand,New Zealand First,891,,,,Moffitt 2017,
+Nicaragua,,NA,Daniel Ortega,2007,,Ruth-Lovell 2019,
+Norway,Progress Party,351,,,,Taggart 2017,
+Peru,,NA,Alberto Fujimori,1990,2000,Pappas 2019; Ruthl-Lovell 2019,
+Peru,,NA,Victor Raúl Haya de la Torre,,,De La Torre 2017,
+Poland,Self-Defence,207,,,,Albertazzi/Müller 2013,
+Poland,League of Polish Families,987,,,,Albertazzi/Müller 2013,
+Poland,PiS - Law and Justice,528,,,,Stanley 2017,
+Portugal,-,NA,,,,,
+Romania,"Greater Romania Party (Partidul România Mare, PRM)",713,,,,Stanley 2017,
+Romania,"National Unity Party (Partidul de UniuneNaţională a Românilor, PUNR)",648,,,,Stanley 2017,
+Romania,"People’s Party—Dan Diaconescu (Partidul Poporului—Dan Diaconescu,PP-DD)",2130,,,,Stanley 2017,
+Slovakia,"Party of Civic Understanding (Strana občianskeho porozumenia, SOP)",1016,,,,Stanley 2017,
+Slovakia,"Union of the Workers of Slovakia (Združenie robotníkovSlovenska, ZRS)",1563,,,,Stanley 2017,
+Slovakia,"Movement for a Democratic Slovakia (Ľudová strana—Hnutie za demokratické Slovensko, ĽS-HZDS or HZDS",1142,,,,Stanley 2017,
+Slovakia,"Alliance of the New Citizen (Aliancia Nového Občana, ANO)",1200,,,,Stanley 2017,
+Slovakia,"Slovak National Party (Slovenskánárodná strana, SNS)",1072,,,,Stanley 2017,
+Slovakia,"Direction–SocialDemocracy (Smer–sociálna demokracia, Smer-SD—commonly known as SMER)",220,,,,Stanley 2017,
+Slovenia,"National Right (Slovenska nacionalnadesnica, SND)",NA,,,,Stanley 2017,
+Slovenia,"Slovenian National Party (Slovenskanacionalna stranka, SNS)",981,,,,Stanley 2017,
+Spain,Unidas Podemos,2724,,,,Taggart 2017,
+Spain,Podemos,2376,,,,Taggart 2017,
+Sweden,Sweden Democrats,1546,,,,Taggart 2017,
 Sweden,"New Democracy
-",951,,,,Taggart 2017
-Switzerland,Swiss People’s Party,750,,,,Albertazzi/Müller 2013
-Turkey,AKP,901,,,,Aytaç/Elçi 2019
-United Kingdom,UKIP,1272,,,,Taggart 2017
-United States of America,,NA,Donald Trump,2017,,Lowndes 2017
-Uruguay,,NA,No populist government,,,De La Torre 2017
-Venezuela,,NA,Hugo Chávez,1999,2013,Pappas 2019; Ruthl-Lovell 2019; De La Torre 2017
-Venezuela,,NA,Nicolás Maduro,2013,,Pappas 2019; Ruthl-Lovell 2019
+",951,,,,Taggart 2017,
+Switzerland,Swiss People’s Party,750,,,,Albertazzi/Müller 2013,
+Turkey,AKP,901,,,,Aytaç/Elçi 2019,
+United Kingdom,UKIP,1272,,,,Taggart 2017,
+United States of America,,NA,Donald Trump,2017,,Lowndes 2017,
+Uruguay,,NA,No populist government,,,De La Torre 2017,
+Venezuela,,NA,Hugo Chávez,1999,2013,Pappas 2019; Ruthl-Lovell 2019; De La Torre 2017,
+Venezuela,,NA,Nicolás Maduro,2014,,Pappas 2019; Ruthl-Lovell 2019,actually 2013

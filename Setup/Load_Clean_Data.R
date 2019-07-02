@@ -65,9 +65,8 @@ V_dem = fread("C:/RTest/V-Dem-CY+Others-v8.csv", encoding = "UTF-8") %>%
 
 # Own Dataset
 pop_par_pres = fread("Datasets/Populistische Parteien_Praesidenten.csv", encoding = "UTF-8") %>% 
-  mutate(populist = 1,
-         `Start Regierungsbeteiligung` = if_else(president_primeminister == "Nicolás Maduro", as.integer(2014), `Start Regierungsbeteiligung`))
-
+  rename(pop_start = `Start Regierungsbeteiligung`, pop_end = `Ende Regierungsbeteiligung`) %>% 
+  mutate(populist = 1)
 
 # ParlGov and Own Dataset
 
