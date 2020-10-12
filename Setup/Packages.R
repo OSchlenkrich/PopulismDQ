@@ -25,6 +25,7 @@ library(rmarkdown)
 library(stargazer)
 library(onehot)
 library(car)
+library(fastDummies)
 
 
 # for correct display of tibbles

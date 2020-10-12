@@ -16,7 +16,7 @@ pg_frame = fread("Datasets/viewcalc_country_year_share.csv")
 
 
 # DMX
-DMX = fread("Datasets/DemocracyMatrix_v1_1.csv")
+DMX = fread("Datasets/DemocracyMatrix_v3.csv")
 
 
 # CHES
@@ -58,13 +58,22 @@ party_matched = party %>%
   left_join(MatchingList,  by = "party_id") %>% 
   bind_rows(party %>% filter(party_id %!in% MatchingList$party_id) )
 
-# V-Dem Dataset
+# QoG Dataset
 
-V_dem = fread("C:/RTest/V-Dem-CY+Others-v8.csv", encoding = "UTF-8") %>% 
-  select(country_name, year, gdp_growth = e_migdpgro, v2csantimv)
+QoG = fread("unzip -p Datasets/qog_std_ts_jan20.zip", encoding = "UTF-8") %>% 
+  select(country_name = cname, year, gdp_growth_caus = wdi_gdpcapgr) %>% 
+  mutate(gdp_growth_caus = na_locf(gdp_growth_caus),
+         country_name = ifelse(country_name == "France (1963-)", "France", country_name),
+         country_name = ifelse(country_name == "Cyprus (1975-)", "Cyprus", country_name))
+
+# VDem Dataset
+
+V_dem = fread("unzip -p Datasets/V-Dem-CY-Full+Others-v10.zip", encoding = "UTF-8") %>% 
+  select(country_name, year, socequal_caus = v2dlunivl, pubequal_caus = v2peapsecon)
+
 
 # Own Dataset
-pop_par_pres = fread("Datasets/Populistische Parteien_Praesidenten.csv", encoding = "UTF-8") %>% 
+pop_par_pres = fread("Datasets/Populistische Parteien_Praesidenten_071020.csv", encoding = "UTF-8") %>% 
   rename(pop_start = `Start Regierungsbeteiligung`, pop_end = `Ende Regierungsbeteiligung`) %>% 
   mutate(populist = 1)
 

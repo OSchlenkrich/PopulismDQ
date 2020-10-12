@@ -1,11 +1,11 @@
 # Impulse and Unit Response Function
 
 
-variable = "populist_is_gov"
-coef_mat = TSCS_reg("rule_settlement_control_context")
-var_lag = "rule_settlement_control_context"
-Time=20
-x=1
+# variable = "populist_is_gov"
+# coef_mat = TSCS_reg("rule_settlement_control_context")
+# var_lag = "rule_settlement_control_context"
+# Time=20
+# x=1
 
 Unit_Response = function(variable, Time = 11, x=1, var_lag ) {
 
