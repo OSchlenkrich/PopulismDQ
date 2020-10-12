@@ -310,7 +310,7 @@ make_LRE = function(model, var, credmass = 0.95, unit=1) {
                              dep_label = var, 
                              unit = unit, time_periods=4, ci=0.95, ecm = F)
   
-  return(ggarrange(p1,p2,p3))
+  return(ggarrange(p1,p2,p3, ncol=3))
 }
 
 
