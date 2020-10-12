@@ -487,7 +487,7 @@ lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, u
   print(hdi(LRM, credMass = ci))
   CI = round(hdi(LRM, credMass = ci),3)
   
-  label = paste("LRM: ", round(median(LRM),3), " (", CI[1], " - ",CI[2],")", sep="")
+  label = paste("LRM: ", round(median(LRM),3), " (", CI[1], " — ",CI[2],")", sep="")
   
   title = gsub("b_","",colnames(posterior_coefs))
   title = gsub("_wi","",title)
@@ -505,3 +505,135 @@ lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, u
     ylab(paste("Change in", dep_label, sep=" "))
   return(p1)
 }
+
+
+# Bayesian ####
+
+
+Make_formulalag1_ml = function(variable) {
+  raw_formula = paste("placeholder ~ 1 + 
+          placeholder_wi_lag +          
+          
+          pop_Opp_caus_wi +
+          pop_cab_caus_wi +
+          pop_HOG_caus_wi +
+          
+          pop_Opp_caus_wi_lag +
+          pop_cab_caus_wi_lag +
+          pop_HOG_caus_wi_lag +
+          
+          gdp_growth_caus_wi +
+          gdp_growth_caus_wi_lag +
+          
+          socequal_caus_wi + 
+          socequal_caus_wi_lag+ 
+
+          pop_Opp_caus_cbw +
+          pop_cab_caus_cbw +
+          pop_HOG_caus_cbw +
+          gdp_growth_caus_cbw +
+          socequal_caus_cbw +
+
+          pop_Opp_caus_ybw +
+          pop_cab_caus_ybw +
+          pop_HOG_caus_ybw +
+          gdp_growth_caus_ybw +
+          socequal_caus_ybw +
+
+          (1|country_name)  +
+          (1|year)",
+                      collapse=" + ")
+  
+  my_tscs_formula = as.formula(gsub("placeholder", variable, raw_formula))
+  
+  return(my_tscs_formula)
+}
+
+Make_formulalag2_ml = function(variable) {
+  raw_formula = paste("placeholder ~ 1 + 
+          placeholder_wi_lag +
+          placeholder_wi_lag_lag2  +
+
+          pop_Opp_caus_wi +
+          pop_cab_caus_wi +
+          pop_HOG_caus_wi +
+          
+          pop_Opp_caus_wi_lag +
+          pop_cab_caus_wi_lag +
+          pop_HOG_caus_wi_lag +
+          
+          gdp_growth_caus_wi +
+          gdp_growth_caus_wi_lag +
+          
+          socequal_caus_wi + 
+          socequal_caus_wi_lag+ 
+
+          pop_Opp_caus_cbw +
+          pop_cab_caus_cbw +
+          pop_HOG_caus_cbw +
+          gdp_growth_caus_cbw +
+          socequal_caus_cbw +
+
+          pop_Opp_caus_ybw +
+          pop_cab_caus_ybw +
+          pop_HOG_caus_ybw +
+          gdp_growth_caus_ybw +
+          socequal_caus_ybw +
+
+          (1|country_name)  +
+          (1|year)",
+                      collapse=" + ")
+  
+  my_tscs_formula = as.formula(gsub("placeholder", variable, raw_formula))
+  
+  return(my_tscs_formula)
+}
+TSCS_reg_brms = function(variable, lag=1) {
+  
+  if (lag == 1) {
+    my_tscs_formula = Make_formulalag1_ml(variable)
+    
+  }
+  if (lag == 2) {
+    my_tscs_formula = Make_formulalag2_ml(variable)
+    
+  }
+  priors = c(set_prior("normal(0,10)", class = "Intercept"),
+             set_prior("normal(0,10)", class = "b"),
+             set_prior("cauchy(0,5)", class="sd"))
+  TSCS_obj = brm(bf(my_tscs_formula), 
+                 brms_ml_data %>% 
+                   mutate(year = as.factor(year)),
+                 warmup = 500,
+                 iter = 1500,
+                 prior =priors,
+                 chains=5,
+                 backend = "cmdstanr")
+  
+  
+  return(TSCS_obj)
+}
+
+
+
+
+make_LRE = function(model, var, credmass = 0.95, unit=1) {
+  library(HDInterval)
+  library(ggpubr)
+  
+  p1 = lag_distribution_both(model, var, 
+                             IndV_label = "pop_cab_caus" , 
+                             dep_label = var, 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F)
+  p2 = lag_distribution_both(model, var, 
+                             IndV_label = "pop_Opp_caus" , 
+                             dep_label = var, 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F)
+  p3 = lag_distribution_both(model, var, 
+                             IndV_label = "pop_HOG_caus" , 
+                             dep_label = var, 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F)
+  
+  return(ggarrange(p1,p2,p3, ncol=3))
+}
+

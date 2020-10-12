@@ -1,5 +1,6 @@
 # Packages
-
+library(stringr)
+library(gtools)
 library(dplyr)
 library(data.table)
 library(ggplot2)
@@ -26,8 +27,10 @@ library(stargazer)
 library(onehot)
 library(car)
 library(fastDummies)
+library(psych)
+library(pixiedust)
 
+library(brms)
+options(mc.cores = parallel::detectCores())
 
-# for correct display of tibbles
-options(crayon.enabled = FALSE)
 

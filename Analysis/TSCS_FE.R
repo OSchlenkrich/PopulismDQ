@@ -5,8 +5,7 @@ source("Setup/MergeDatasets_w_OwnData.R")
 source("Setup/Impulse_Unit_Response.R")
 
 # Summary Statistics
-library(psych)
-library(pixiedust)
+
 my_vars = TSCS_data_trans %>% 
   select_at(vars(matches("_caus"), ends_with("_context"), -matches("pubequal_caus"), -matches("inst"), -matches("_index"), -matches("classification")))
 psych::describe(my_vars) %>% 
@@ -98,4 +97,80 @@ get_autocorrelation("rule_settlement_equality_context", lag=1)
 get_autocorrelation("rule_settlement_control_context", lag=2)
 
 
+# Results
+m1 = TSCS_reg("decision_freedom_context", lag=2)
+m2 = TSCS_reg("decision_equality_context", lag=1)
+m3 = TSCS_reg("decision_control_context", lag=1)
 
+m4 = TSCS_reg("intermediate_freedom_context", lag=2)
+m5 = TSCS_reg("intermediate_equality_context", lag=1)
+m6 = TSCS_reg("intermediate_control_context", lag=2)
+
+m7 = TSCS_reg("communication_freedom_context", lag=2)
+m8 = TSCS_reg("communication_equality_context", lag=2)
+m9 = TSCS_reg("communication_control_context", lag=2)
+
+m10 = TSCS_reg("rights_freedom_context", lag=2)
+m11 = TSCS_reg("rights_equality_context", lag=2)
+m12 = TSCS_reg("rights_control_context", lag=2)
+
+m13 = TSCS_reg("rule_settlement_freedom_context", lag=2)
+m14 = TSCS_reg("rule_settlement_equality_context", lag=1)
+m15 = TSCS_reg("rule_settlement_control_context", lag=2)
+
+
+modellist = list(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15)
+modellabels = list("EV F", "EV G", "EV K",
+                   "IV F", "IV G", "IV K",
+                   "KO F", "KO G", "KO K",
+                   "RG F", "RG G", "RG K",
+                   "RS F", "RS G", "RS K")
+
+makeTable = function(model, labels) {
+  body = tidy(model[[2]]) %>% 
+    filter(grepl("country", term) == F) %>% 
+    filter(grepl("year", term) == F) %>% 
+    mutate(stars = stars.pval(p.value),
+           estimate = paste(round(estimate, 3), stars, sep=""),
+           std.error = paste("(", round(std.error,3), ")", sep=""),
+           estimate = paste(estimate, "</br>", std.error, sep="")) %>% 
+    mutate(term = ifelse(grepl("_context_lag2", term), "Lag2", term),
+           term = ifelse(grepl("_context_lag", term), "Lag", term)) %>% 
+    select(term, !!labels := estimate) 
+  
+  
+  foot = broom::glance(model[[1]]) %>% 
+    select("R<sub>2" = r.squared, N = nobs) %>% 
+    pivot_longer(everything()) %>% 
+    mutate(value = as.character(round(value, 2))) %>% 
+    rename(term = name, !!labels := value)
+
+  return(list(body, foot))  
+}
+
+modeltable_body = makeTable(modellist[[1]], modellabels[[1]])[[1]]
+modeltable_foot = makeTable(modellist[[1]], modellabels[[1]])[[2]]
+
+
+for (i in 2:length(modellist)) {
+  model_i = makeTable(modellist[[i]], modellabels[[i]])
+  
+  modeltable_body = modeltable_body %>% 
+    full_join(model_i[[1]], by = "term")
+  modeltable_foot = modeltable_foot %>% 
+    full_join(model_i[[2]], by = "term")
+}
+
+modeltable_body %>% 
+  mutate(term = gsub("_caus", "", term)) %>% 
+  dust() %>% 
+  redust(modeltable_foot, part="foot") %>% 
+  sprinkle_colnames("term" = NA_character_) %>%
+  
+  sprinkle(rows = 1, border="bottom", part = "head") %>% 
+  sprinkle(rows = 1, border="top", part = "foot") %>% 
+  sprinkle(cols = 1, border="right", part = "body") %>% 
+  
+  sprinkle_na_string(na_string = "", part=c("head")) %>% 
+  sprinkle_na_string(na_string = "", part=c("body")) %>% 
+  sprinkle_print_method(print_method = "html")
