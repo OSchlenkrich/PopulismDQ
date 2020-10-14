@@ -411,7 +411,7 @@ TSCS_reg = function(variable, lag=1, dataset = TSCS_data_trans) {
                  model="pooling")
   
   
-  #print(summary(TSCS_obj))
+  print(summary(TSCS_obj))
   coef_mat = coeftest(TSCS_obj, vcov.=function(x) vcovBK(x, cluster="time", type="HC0"))
   auto_corr1 = pbgtest(TSCS_obj, order=1)
   auto_corr2 = pbgtest(TSCS_obj, order=2)
@@ -479,15 +479,18 @@ lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, u
     rename(est = X1, l = X2, u = X3) %>% 
     mutate(time = paste("t + ", 0:(time_periods-1), sep=""))
   
+  #for (i in 1:dim(estimates)[1]) {
   for (i in 1:dim(estimates)[1]) {
     estimates$est[i] = median(Y[,i])
-    estimates$l[i] = HDInterval::hdi(Y[,i], credMass = ci)[1]
-    estimates$u[i] = HDInterval::hdi(Y[,i], credMass = ci)[2]
+    if (i == 1) {
+      estimates$l[i] = HDInterval::hdi(Y[,i], credMass = ci)[1]
+      estimates$u[i] = HDInterval::hdi(Y[,i], credMass = ci)[2]
+    }
   }
   print(hdi(LRM, credMass = ci))
   CI = round(hdi(LRM, credMass = ci),3)
   
-  label = paste("LRM: ", round(median(LRM),3), " (", CI[1], " — ",CI[2],")", sep="")
+  label = paste("LRM: ", round(median(LRM),3), " (", CI[1], " \u2013 ",CI[2],")", sep="")
   
   title = gsub("b_","",colnames(posterior_coefs))
   title = gsub("_wi","",title)
@@ -497,7 +500,7 @@ lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, u
   
   p1 = ggplot(estimates, aes(x=time, y=est)) + 
     geom_bar(stat="identity") +
-    #geom_errorbar(aes(ymin=l, ymax=u)) +
+    geom_errorbar(aes(ymin=l, ymax=u)) +
     geom_hline(yintercept = 0) +
     theme_bw()  +
     ggtitle(title, subtitle = label) +
@@ -588,7 +591,7 @@ Make_formulalag2_ml = function(variable) {
   
   return(my_tscs_formula)
 }
-TSCS_reg_brms = function(variable, lag=1) {
+TSCS_reg_brms = function(variable, lag=1, dataset = brms_ml_data) {
   
   if (lag == 1) {
     my_tscs_formula = Make_formulalag1_ml(variable)
@@ -602,11 +605,12 @@ TSCS_reg_brms = function(variable, lag=1) {
              set_prior("normal(0,10)", class = "b"),
              set_prior("cauchy(0,5)", class="sd"))
   TSCS_obj = brm(bf(my_tscs_formula), 
-                 brms_ml_data %>% 
+                 dataset %>% 
                    mutate(year = as.factor(year)),
                  warmup = 500,
                  iter = 1500,
                  prior =priors,
+                 family="beta",
                  chains=5,
                  backend = "cmdstanr")
   
@@ -622,18 +626,22 @@ make_LRE = function(model, var, credmass = 0.95, unit=1) {
   library(ggpubr)
   
   p1 = lag_distribution_both(model, var, 
-                             IndV_label = "pop_cab_caus" , 
-                             dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F)
-  p2 = lag_distribution_both(model, var, 
                              IndV_label = "pop_Opp_caus" , 
                              dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F)
+                             unit = unit, time_periods=4, ci=credmass, ecm = F) + 
+    ggtitle("Opposition")
+  p2 = lag_distribution_both(model, var, 
+                             IndV_label = "pop_cab_caus" , 
+                             dep_label = var, 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F)+ 
+    ggtitle("Kabinett")
+ 
   p3 = lag_distribution_both(model, var, 
                              IndV_label = "pop_HOG_caus" , 
                              dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F)
+                             unit = unit, time_periods=4, ci=credmass, ecm = F)  + 
+    ggtitle("Regierungschef/Präsident")
   
-  return(ggarrange(p1,p2,p3, ncol=3))
+  return(ggarrange(p1,p2,p3, ncol=3) %>%  annotate_figure(var))
 }
 

@@ -15,6 +15,14 @@ psych::describe(my_vars) %>%
   dust() %>% 
   pixiedust::sprinkle_print_method(print_method = "html")
   
+
+n_distinct(TSCS_data_trans$country_name)
+TSCS_data_trans %>% 
+  group_by(country_name) %>% 
+  summarise(cnt = n_distinct(year)) %>%
+  ungroup() %>% 
+  summarise(min(cnt), max(cnt))
+
 library(mice)
 md.pattern(my_vars, rotate.names = T)  
 

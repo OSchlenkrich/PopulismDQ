@@ -64,7 +64,8 @@ QoG = fread("unzip -p Datasets/qog_std_ts_jan20.zip", encoding = "UTF-8") %>%
   select(country_name = cname, year, gdp_growth_caus = wdi_gdpcapgr) %>% 
   mutate(gdp_growth_caus = na_locf(gdp_growth_caus),
          country_name = ifelse(country_name == "France (1963-)", "France", country_name),
-         country_name = ifelse(country_name == "Cyprus (1975-)", "Cyprus", country_name))
+         country_name = ifelse(country_name == "Cyprus (1975-)", "Cyprus", country_name),
+         country_name = ifelse(country_name == "United States", "United States of America", country_name))
 
 # VDem Dataset
 

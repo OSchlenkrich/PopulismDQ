@@ -239,7 +239,7 @@ matrix = diff_dec_f %>%
          Int = ifelse(Int == "communication", "Kommunikation", Int),
          Int = ifelse(Int == "rights", "Rechtsgarantie", Int),
          Int = ifelse(Int == "rule_settlement", "Regelsetzung und \n-anwendung", Int)) %>% 
-  mutate(text_label = paste(round(mean,3), "\n", "(", round(lower,3 ), " — ", round(upper, 3),")", sep=""))
+  mutate(text_label = paste(round(mean,3), "\n", "(", round(lower,3 ), " \u2013 ", round(upper, 3),")", sep=""))
 
 matrix_complete = matrix %>% 
   bind_rows(matrix %>% 
