@@ -79,6 +79,7 @@ DMX_populist = DMX_context %>%
   left_join(populist_yearly_mean_cabinet, by=c("country_name", "year")) %>%
   left_join(populist_yearly_mean_prime_minister, by=c("country_name", "year"))  %>%
   left_join(pop_pres, by=c("country_name", "year")) %>%  
+  #left_join(consolidated_democracy, by=c("country_name")) %>%  
   mutate(populist_is_gov = if_else(populist_prime_minister == 1 | populist_pres == 1,1,0),
          populist_is_gov = if_else(is.na(populist_is_gov) == T, 0, populist_is_gov)) %>% 
   left_join(QoG, by=c("country_name", "year")) %>% 
@@ -89,7 +90,6 @@ DMX_populist = DMX_context %>%
                            )),
          pop_cat = if_else(is.na(pop_cat)==T, "No Populist Party", pop_cat),
          pop_cat = relevel(as.factor(pop_cat), ref="No Populist Party"))
-  
 
 # Select Only Countries with at least one populist party in history
 
@@ -118,12 +118,15 @@ write.csv(DMX_populist %>%
 
 
 # Create TSCS Dataset ####
-
+library(rcompanion)
 TSCS_data_trans = DMX_populist %>% 
   filter(country_name %in% Pop_Countries) %>% 
   mutate(classification_context = ifelse(country_name == "Mexico" & year < 1996, "", classification_context),
          classification_context = ifelse(country_name == "Estonia" & year <= 1991, "", classification_context),
-         classification_context = ifelse(country_name == "Turkey" & year < 2000, "", classification_context)) %>% 
+         classification_context = ifelse(country_name == "Turkey" & year < 2000, "", classification_context),
+         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context),
+         intermediate_freedom_context = ifelse(country_name == "Latvia" & year <= 1992, NA, intermediate_freedom_context)
+         ) %>%
   filter(year >= 1990, classification_context != "", classification_context != "Hard Autocracy") %>% 
   dummy_cols(., "pop_cat", remove_first_dummy = TRUE) %>%
   group_by(country_name) %>% 
@@ -134,10 +137,12 @@ TSCS_data_trans = DMX_populist %>%
   
   rename(pop_cab_caus =  pop_cat_Cabinet, pop_HOG_caus = pop_cat_HOG, pop_Opp_caus = pop_cat_Opposition) %>%  
   
-  #mutate_at(vars(ends_with("context"), -classification_context), funs(transformTukey((.-min(., na.rm=T)) + 1, statistic = 1, plotit=F, quiet=T)) ) %>% 
+  # mutate_at(vars(ends_with("context"), -classification_context), funs(transformTukey((.-min(., na.rm=T)) + 1, statistic = 1, plotit=F, quiet=T)) ) %>% 
   
   group_by(country_name) %>% 
   mutate_at(vars(ends_with("caus")), funs(lag = dplyr::lag(., 1))) %>% 
+  #mutate_at(vars(ends_with("caus")), funs(lag2 = dplyr::lag(., 2))) %>% 
+  
   mutate_at(vars(ends_with("context"), -classification_context), funs(lag = dplyr::lag(., 1))) %>% 
   mutate_at(vars(ends_with("context"), -classification_context), funs(lag2 = dplyr::lag(., 2))) %>% 
   mutate_at(vars(ends_with("context"), -classification_context), funs(lag3 = dplyr::lag(., 3))) %>% 

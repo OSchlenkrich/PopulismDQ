@@ -4,8 +4,7 @@ source("Setup/Load_Clean_Data.R")
 source("Setup/MergeDatasets_w_OwnData.R")
 source("Setup/Impulse_Unit_Response.R")
 
-
-# Calculate Within and BEtween Effects
+# Calculate Within and Between Effects
 brms_ml_data = TSCS_data_trans %>% 
   group_by(country_name) %>% 
   mutate_at(vars(ends_with("caus")), funs(cbw = mean(., na.rm=T)))  %>% 
@@ -28,7 +27,6 @@ brms_ml_data = brms_ml_data %>%
   mutate_at(vars(ends_with("wi_lag")), funs(lag2 = dplyr::lag(., 1))) %>% 
   mutate_at(vars(ends_with("_wi")), funs(lag = dplyr::lag(., 1))) %>% 
   ungroup()
-
 
 # Summary Statistics and Visualization
 
@@ -58,6 +56,7 @@ brms_ml_data %>%
 dec_f = TSCS_reg_brms("decision_freedom_context", lag=2)
 dec_e = TSCS_reg_brms("decision_equality_context", lag=1)
 dec_c = TSCS_reg_brms("decision_control_context", lag=1)
+
 
 int_f = TSCS_reg_brms("intermediate_freedom_context", lag=2)
 int_e = TSCS_reg_brms("intermediate_equality_context", lag=1)
@@ -150,6 +149,7 @@ summary(com_e, prob=0.9)
 summary(rights_e, prob=0.9)
 summary(rs_e, prob=0.9)
 
+
 ###
 
 
@@ -157,35 +157,73 @@ library(bayesplot)
 ppc_dens_overlay(y = dec_f$data$decision_freedom_context,
                  yrep = posterior_predict(dec_f)[50:150, ])
 
+# Residuals
+
+plot_residuals(dec_f, "Decision Freedrom") # Peru, Turkey, Venezuela, USA, Hungary
+# plot_residuals(dec_f, "Decision Freedrom", all=T) 
+plot_residuals(dec_e, "Decision Equality") # Peru, Nicaragua, Venezuela
+# plot_residuals(dec_e, "Decision Equality", all=T)
+plot_residuals(dec_c, "Decision Control") # Peru, Venezuela
+
+plot_residuals(int_f, "Int Freedom") # Turkey, Venezuela, Peru
+plot_residuals(int_e, "Int Equality") # Turkey, Brazil, Venezuela, India
+plot_residuals(int_c, "Int Control")# Ecuador, Venezuela, Peru
+
+plot_residuals(com_f, "Com Freedom") # Ecuador, Venezuela, Peru
+plot_residuals(com_e, "Com Equality") # Ecuador, Venezuela, Peru
+plot_residuals(com_c, "Com Control")
+
+plot_residuals(rights_f, "Rights Freedom")
+plot_residuals(rights_e, "Rights Equality")
+plot_residuals(rights_c, "Rights Control")
+
+plot_residuals(rs_f, "RS Freedom")
+plot_residuals(rs_e, "RS Equality")
+plot_residuals(rs_c, "RS Control")
+
+# Without Outliers ####
+make_brms_sub = function(model) {
+  dataset =  get_residuals(model) %>% 
+    filter(residuals < 3, residuals > -3)
+  return(dataset)
+}
 
 
-# Without Turkey, Peru and Venezuela
+dec_f_sub = TSCS_reg_brms("decision_freedom_context", lag=2, 
+                          make_brms_sub(dec_f))
+dec_e_sub = TSCS_reg_brms("decision_equality_context", lag=1, 
+                          make_brms_sub(dec_e))
+dec_c_sub = TSCS_reg_brms("decision_control_context", lag=1, 
+                          make_brms_sub(dec_c))
 
-brms_ml_data_sub = brms_ml_data %>% 
-  filter(country_name != "Turkey",
-         country_name != "Peru",
-         country_name != "Venezuela")
+int_f_sub = TSCS_reg_brms("intermediate_freedom_context", lag=2, 
+                          make_brms_sub(int_f))
+int_e_sub = TSCS_reg_brms("intermediate_equality_context", lag=1, 
+                          make_brms_sub(int_e))
+int_c_sub = TSCS_reg_brms("intermediate_control_context", lag=2, 
+                          make_brms_sub(int_c))
 
+com_f_sub = TSCS_reg_brms("communication_freedom_context", lag=2, 
+                          make_brms_sub(com_f))
+com_e_sub = TSCS_reg_brms("communication_equality_context", lag=1, 
+                          make_brms_sub(com_e))
+com_c_sub = TSCS_reg_brms("communication_control_context", lag=2, 
+                          make_brms_sub(com_c))
 
-dec_f_sub = TSCS_reg_brms("decision_freedom_context", lag=2, dataset = brms_ml_data_sub)
-dec_e_sub = TSCS_reg_brms("decision_equality_context", lag=1, dataset = brms_ml_data_sub)
-dec_c_sub = TSCS_reg_brms("decision_control_context", lag=1, dataset = brms_ml_data_sub)
+rights_f_sub = TSCS_reg_brms("rights_freedom_context", lag=2, 
+                             make_brms_sub(rights_f))
+rights_e_sub = TSCS_reg_brms("rights_equality_context", lag=2, 
+                             make_brms_sub(rights_e))
+rights_c_sub = TSCS_reg_brms("rights_control_context", lag=2, 
+                             make_brms_sub(rights_c))
 
-int_f_sub = TSCS_reg_brms("intermediate_freedom_context", lag=2, dataset = brms_ml_data_sub)
-int_e_sub = TSCS_reg_brms("intermediate_equality_context", lag=1, dataset = brms_ml_data_sub)
-int_c_sub = TSCS_reg_brms("intermediate_control_context", lag=2, dataset = brms_ml_data_sub)
+rs_f_sub = TSCS_reg_brms("rule_settlement_freedom_context", lag=2, 
+                         make_brms_sub(rs_f))
+rs_e_sub = TSCS_reg_brms("rule_settlement_equality_context", lag=1, 
+                         make_brms_sub(rs_e))
+rs_c_sub = TSCS_reg_brms("rule_settlement_control_context", lag=2, 
+                         make_brms_sub(rs_c))
 
-com_f_sub = TSCS_reg_brms("communication_freedom_context", lag=2, dataset = brms_ml_data_sub)
-com_e_sub = TSCS_reg_brms("communication_equality_context", lag=1, dataset = brms_ml_data_sub)
-com_c_sub = TSCS_reg_brms("communication_control_context", lag=2, dataset = brms_ml_data_sub)
-
-rights_f_sub = TSCS_reg_brms("rights_freedom_context", lag=2, dataset = brms_ml_data_sub)
-rights_e_sub = TSCS_reg_brms("rights_equality_context", lag=2, dataset = brms_ml_data_sub)
-rights_c_sub = TSCS_reg_brms("rights_control_context", lag=2, dataset = brms_ml_data_sub)
-
-rs_f_sub = TSCS_reg_brms("rule_settlement_freedom_context", lag=2)
-rs_e_sub = TSCS_reg_brms("rule_settlement_equality_context", lag=1)
-rs_c_sub = TSCS_reg_brms("rule_settlement_control_context", lag=2)
 
 saveRDS(dec_f_sub, file="brmsModels/dec_f_sub.RDS")
 saveRDS(dec_e_sub, file="brmsModels/dec_e_sub.RDS")
@@ -204,7 +242,6 @@ saveRDS(rs_e_sub, file="brmsModels/rs_e_sub.RDS")
 saveRDS(rs_c_sub, file="brmsModels/rs_c_sub.RDS")
 
 # Load Models
-
 dec_f_sub = readRDS(file="brmsModels/dec_f_sub.RDS")
 dec_e_sub = readRDS(file="brmsModels/dec_e_sub.RDS")
 dec_c_sub = readRDS(file="brmsModels/dec_c_sub.RDS")
@@ -222,6 +259,7 @@ rs_e_sub = readRDS(file="brmsModels/rs_e_sub.RDS")
 rs_c_sub = readRDS(file="brmsModels/rs_c_sub.RDS")
 
 
+
 make_LRE(dec_f_sub, "decision_freedom_context", credmass = 0.95)
 make_LRE(dec_e_sub, "decision_equality_context", credmass = 0.95)
 make_LRE(dec_c_sub, "decision_control_context", credmass = 0.95)
@@ -237,3 +275,24 @@ make_LRE(rights_c_sub, "rights_control_context", credmass = 0.95)
 make_LRE(rs_f_sub, "rule_settlement_freedom_context", credmass = 0.95)
 make_LRE(rs_e_sub, "rule_settlement_equality_context", credmass = 0.95)
 make_LRE(rs_c_sub, "rule_settlement_control_context", credmass = 0.95)
+
+# Residuals
+plot_residuals(dec_f_sub, "Decision Freedrom Sub")
+plot_residuals(dec_e_sub, "Decision Equality Sub") 
+plot_residuals(dec_c_sub, "Decision Control Sub")
+
+plot_residuals(int_f_sub, "Int Freedom Sub") 
+plot_residuals(int_e_sub, "Int Equality Sub") 
+plot_residuals(int_c_sub, "Int Control Sub")
+
+plot_residuals(com_f_sub, "Com Freedom Sub") 
+plot_residuals(com_e_sub, "Com Equality Sub")
+plot_residuals(com_c_sub, "Com Control Sub")
+
+plot_residuals(rights_f_sub, "Rights Freedom Sub")
+plot_residuals(rights_e_sub, "Rights Equality Sub")
+plot_residuals(rights_c_sub, "Rights Control Sub")
+
+plot_residuals(rs_f_sub, "RS Freedom Sub")
+plot_residuals(rs_e_sub, "RS Equality Sub")
+plot_residuals(rs_c_sub, "RS Control Sub")

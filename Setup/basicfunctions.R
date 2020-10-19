@@ -411,7 +411,7 @@ TSCS_reg = function(variable, lag=1, dataset = TSCS_data_trans) {
                  model="pooling")
   
   
-  print(summary(TSCS_obj))
+  #print(summary(TSCS_obj))
   coef_mat = coeftest(TSCS_obj, vcov.=function(x) vcovBK(x, cluster="time", type="HC0"))
   auto_corr1 = pbgtest(TSCS_obj, order=1)
   auto_corr2 = pbgtest(TSCS_obj, order=2)
@@ -419,8 +419,20 @@ TSCS_reg = function(variable, lag=1, dataset = TSCS_data_trans) {
   return(list(TSCS_obj, round(coef_mat,5), auto_corr1,auto_corr2,auto_corr3))
 }
 
+get_autocorrelation = function(varname, lag) {
+  # order 1
+  statistic = round(TSCS_reg(varname, lag=lag)[[3]]$statistic, 3)
+  p.value = round(TSCS_reg(varname, lag=lag)[[3]]$p.value, 3)
+  
+  print(paste("1 :",statistic, ", p = ", p.value, sep=""))
+  # order 2
+  statistic = round(TSCS_reg(varname, lag=lag)[[4]]$statistic, 3)
+  p.value = round(TSCS_reg(varname, lag=lag)[[4]]$p.value, 3)
+  print(paste("2 :", statistic, ", p = ", p.value, sep=""))
+  
+}
 
-lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, unit = 1, time_periods=4, ci=0.95, ecm = F) {
+lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, unit = 1, time_periods=4, ci=0.95, ecm = F, justHDI = F) {
   
   if (unit == "sd") {
     unit = brms_model$data %>% 
@@ -487,9 +499,14 @@ lag_distribution_both = function(brms_model, LDV_label, IndV_label, dep_label, u
       estimates$u[i] = HDInterval::hdi(Y[,i], credMass = ci)[2]
     }
   }
+  
+
   print(hdi(LRM, credMass = ci))
   CI = round(hdi(LRM, credMass = ci),3)
   
+  if (justHDI == T) {
+    return(LRM)
+  }  
   label = paste("LRM: ", round(median(LRM),3), " (", CI[1], " \u2013 ",CI[2],")", sep="")
   
   title = gsub("b_","",colnames(posterior_coefs))
@@ -564,7 +581,7 @@ Make_formulalag2_ml = function(variable) {
           pop_Opp_caus_wi_lag +
           pop_cab_caus_wi_lag +
           pop_HOG_caus_wi_lag +
-          
+
           gdp_growth_caus_wi +
           gdp_growth_caus_wi_lag +
           
@@ -591,6 +608,7 @@ Make_formulalag2_ml = function(variable) {
   
   return(my_tscs_formula)
 }
+
 TSCS_reg_brms = function(variable, lag=1, dataset = brms_ml_data) {
   
   if (lag == 1) {
@@ -610,7 +628,6 @@ TSCS_reg_brms = function(variable, lag=1, dataset = brms_ml_data) {
                  warmup = 500,
                  iter = 1500,
                  prior =priors,
-                 family="beta",
                  chains=5,
                  backend = "cmdstanr")
   
@@ -621,27 +638,100 @@ TSCS_reg_brms = function(variable, lag=1, dataset = brms_ml_data) {
 
 
 
-make_LRE = function(model, var, credmass = 0.95, unit=1) {
+make_LRE = function(model, var, credmass = 0.95, unit=1, justHDI = F) {
   library(HDInterval)
   library(ggpubr)
   
   p1 = lag_distribution_both(model, var, 
                              IndV_label = "pop_Opp_caus" , 
                              dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F) + 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F, justHDI = justHDI) + 
     ggtitle("Opposition")
   p2 = lag_distribution_both(model, var, 
                              IndV_label = "pop_cab_caus" , 
                              dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F)+ 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F, justHDI = justHDI)+ 
     ggtitle("Kabinett")
  
   p3 = lag_distribution_both(model, var, 
                              IndV_label = "pop_HOG_caus" , 
                              dep_label = var, 
-                             unit = unit, time_periods=4, ci=credmass, ecm = F)  + 
-    ggtitle("Regierungschef/Präsident")
+                             unit = unit, time_periods=4, ci=credmass, ecm = F, justHDI = justHDI)  + 
+    ggtitle(enc2utf8("Regierungschef/Präsident"))
   
   return(ggarrange(p1,p2,p3, ncol=3) %>%  annotate_figure(var))
 }
 
+
+plot_residuals = function(model, plottitle = NULL, all=F) {
+  modeldata = model$data 
+
+  modeldata = modeldata %>% 
+    bind_cols(residuals = data.frame(residuals(model, type="pearson"))[,1])
+  if (all == F) {
+    p1 = modeldata %>% 
+      mutate(year = as.numeric(levels(year))[year]) %>% 
+      ggplot(aes(x=year, y = residuals, grp=country_name)) +
+      geom_line(size=1.1) +
+      geom_smooth(se=F) +
+      
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      facet_wrap(country_name ~ .)  +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  } else {
+    p1 = modeldata %>% 
+      mutate(year = as.numeric(levels(year))[year]) %>% 
+      ggplot(aes(x=year, y = residuals, grp=country_name)) +
+      geom_smooth(size=1.1, se=F) +
+      geom_point(size=1.1) +
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  }
+  
+  return(p1)
+}
+
+
+plot_residualsX = function(model, X_lab, plottitle = NULL, all=F) {
+  modeldata = model$data 
+  
+  modeldata = modeldata %>% 
+    bind_cols(residuals = data.frame(residuals(model, type="pearson"))[,1]) %>% 
+    rename(X = X_lab)
+    
+  if (all == F) {
+    p1 = modeldata %>% 
+      ggplot(aes(x=X, y = residuals, grp=country_name)) +
+      geom_point(size=1.1) +
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      facet_wrap(country_name ~ .)  +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  } else {
+    p1 = modeldata %>% 
+      ggplot(aes(x=X, y = residuals, grp=country_name)) +
+      geom_point(size=1.1) +
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  }
+  
+  return(p1)
+}
+
+
+get_residuals = function(model) {
+  modeldata =  model$data  %>% 
+    bind_cols(residuals = data.frame(residuals(model, type="pearson"))[,1])
+  return(modeldata)
+}

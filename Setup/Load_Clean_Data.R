@@ -18,6 +18,18 @@ pg_frame = fread("Datasets/viewcalc_country_year_share.csv")
 # DMX
 DMX = fread("Datasets/DemocracyMatrix_v3.csv")
 
+consolidated_democracy = DMX %>% 
+  filter(year >= 1950, year <= 1990) %>% 
+  select(country_name = country, classification_context) %>% 
+  na.omit() %>% 
+  group_by(country_name, classification_context) %>% 
+  summarise(cnt = n()) %>% 
+  mutate(class = ifelse(classification_context == "Deficient Democracy" | 
+                          classification_context == "Working Democracy", 1, 0))  %>% 
+  mutate(class = class * cnt) %>% 
+  ungroup() %>% 
+  select(country_name, consdem_caus_bw = class)
+
 
 # CHES
 CHES_raw = fread("Datasets/2014_CHES_dataset_means.csv") %>% 

@@ -29,6 +29,8 @@ library(car)
 library(fastDummies)
 library(psych)
 library(pixiedust)
+library(broom.mixed)
+
 
 library(brms)
 options(mc.cores = parallel::detectCores())

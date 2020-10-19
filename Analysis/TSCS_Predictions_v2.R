@@ -1,6 +1,6 @@
 # Predicitions
 
-get_prediction = function(model, effect, lagvar, lagvar2 = NULL, upper = T, cred = 0.95, time = 5) {
+get_prediction = function(model, effect, lagvar, lagvar2 = NULL, upper = T, cred = 0.95, time = 5, fixpoint = F) {
   library(HDInterval)
   
   pred_frame = model$data %>% 
@@ -41,6 +41,15 @@ get_prediction = function(model, effect, lagvar, lagvar2 = NULL, upper = T, cred
   
   #mean_sub = 500 - test$cbw - test$ybw 
   
+  if (fixpoint == T) {
+    pred_frame = pred_frame  %>% 
+      mutate(!!lagvar := 0.99 - test$depcbw - test$depybw)
+    if(is.null(lagvar2) == F) {
+      pred_frame = pred_frame  %>% 
+        mutate(!!lagvar2 := 0.99 - test$depcbw - test$depybw)
+    }
+  }
+  
   res = data.frame(mean = rep(NA, time),
                    lower = rep(NA, time),
                    upper = rep(NA, time))
@@ -74,6 +83,8 @@ get_prediction = function(model, effect, lagvar, lagvar2 = NULL, upper = T, cred
   return(res%>% 
            mutate(time = 1:time))
 }
+
+
 
 get_prediction_posterior = function(model, lagvar, lagvar2 = NULL, upper = T, cred = 0.95, time = 5) {
   library(HDInterval)
@@ -114,6 +125,7 @@ get_prediction_posterior = function(model, lagvar, lagvar2 = NULL, upper = T, cr
     summarise(depcbw = mean(depcbw, na.rm=T), 
               depybw = mean(depybw, na.rm=T))
   
+  
   #mean_sub = 500 - test$cbw - test$ybw 
   
   res = list()
@@ -129,23 +141,23 @@ get_prediction_posterior = function(model, lagvar, lagvar2 = NULL, upper = T, cr
     }
     
     res[[i]] =  data.frame(draws = draws, time = i)
-
+    
   }
   
   return(res)
 }
 
 
-plot_prediction = function(model, variablel1, variablel2 = NULL, cred=0.95, time=9) {
-  testu = get_prediction(model, 1, variablel1, variablel2, upper=T, cred=cred, time = time) %>% 
+plot_prediction = function(model, variablel1, variablel2 = NULL, cred=0.95, time=9, fixpoint = F) {
+  testu = get_prediction(model, 1, variablel1, variablel2, upper=T, cred=cred, time = time, fixpoint = fixpoint) %>% 
     mutate(Scen = "upper") 
   
-  testl = get_prediction(model, -1, variablel1, variablel2, upper=F, cred=cred, time = time) %>% 
+  testl = get_prediction(model, -1, variablel1, variablel2, upper=F, cred=cred, time = time, fixpoint = fixpoint) %>% 
     mutate(Scen = "lower") 
   
   #
   title = gsub("_wi_lag","",variablel1)
-
+  
   p1 = testu %>% 
     bind_rows(testl) %>%
     mutate(time = time - 1) %>%
@@ -162,7 +174,7 @@ plot_prediction = function(model, variablel1, variablel2 = NULL, cred=0.95, time
                 bind_rows(testl)))
 }
 
-plot_prediction(dec_f, "decision_freedom_context_wi_lag", "decision_freedom_context_wi_lag_lag2")
+plot_prediction(dec_f, "decision_freedom_context_wi_lag", "decision_freedom_context_wi_lag_lag2", fixpoint = T)
 plot_prediction(dec_e, "decision_equality_context_wi_lag")
 plot_prediction(dec_c, "decision_control_context_wi_lag")
 plot_prediction(int_f, "intermediate_freedom_context_wi_lag", "intermediate_freedom_context_wi_lag_lag2")
@@ -190,7 +202,7 @@ plot_prediction(com_e_sub, "communication_equality_context_wi_lag")
 plot_prediction(com_c_sub, "communication_control_context_wi_lag", "communication_control_context_wi_lag_lag2")
 plot_prediction(rights_f_sub, "rights_freedom_context_wi_lag", "rights_freedom_context_wi_lag_lag2")
 plot_prediction(rights_e_sub, "rights_equality_context_wi_lag", "rights_equality_context_wi_lag_lag2")
-plot_prediction(rights_c_sub, "rights_control_context_wi_lag", "rights_control_context_wi_lag_lag2", time=30)
+plot_prediction(rights_c_sub, "rights_control_context_wi_lag", "rights_control_context_wi_lag_lag2")
 plot_prediction(rs_f_sub, "rule_settlement_freedom_context_wi_lag", "rule_settlement_freedom_context_wi_lag_lag2")
 plot_prediction(rs_e_sub, "rule_settlement_equality_context_wi_lag")
 plot_prediction(rs_c_sub, "rule_settlement_control_context_wi_lag", "rule_settlement_control_context_wi_lag_lag2")
@@ -200,14 +212,14 @@ plot_prediction(rs_c_sub, "rule_settlement_control_context_wi_lag", "rule_settle
 getdifferences = function(model, variablel1, variablel2 = NULL, cred=0.95, time=9) {
   testu = get_prediction_posterior(model, variablel1, variablel2, upper=T, cred=cred, time = time)
   testl = get_prediction_posterior(model, variablel1, variablel2, upper=F, cred=cred, time = time)
-
+  
   label = gsub("_wi_lag","",variablel1)
   # # Difference between No Populist and Populsit
   df = data.frame(variable = label,
-             mean = colMeans(testu[[time]] - testl[[time]])[1],
-             lower = hdi(testu[[time]] - testl[[time]])[1],
-             upper = hdi(testu[[time]] - testl[[time]])[2],
-             row.names = NULL)
+                  mean = colMeans(testu[[time]] - testl[[time]])[1],
+                  lower = hdi(testu[[time]] - testl[[time]])[1],
+                  upper = hdi(testu[[time]] - testl[[time]])[2],
+                  row.names = NULL)
   
   # df = data.frame(variable = label,
   #            mean = colMeans(testu[[time]] - testl[[2]])[1],
