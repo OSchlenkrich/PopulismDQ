@@ -148,3 +148,34 @@ TSCS_data_trans = DMX_populist %>%
   mutate_at(vars(ends_with("context"), -classification_context), funs(lag3 = dplyr::lag(., 3))) %>% 
   ungroup() %>% 
   mutate(trend = as.numeric(year - min(year))) 
+
+
+TSCS_data_transformed = DMX_populist %>% 
+  filter(country_name %in% Pop_Countries) %>% 
+  mutate(classification_context = ifelse(country_name == "Mexico" & year < 1996, "", classification_context),
+         classification_context = ifelse(country_name == "Estonia" & year <= 1991, "", classification_context),
+         classification_context = ifelse(country_name == "Turkey" & year < 2000, "", classification_context),
+         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context),
+         intermediate_freedom_context = ifelse(country_name == "Latvia" & year <= 1992, NA, intermediate_freedom_context)
+  ) %>%
+  filter(year >= 1990, classification_context != "", classification_context != "Hard Autocracy") %>% 
+  dummy_cols(., "pop_cat", remove_first_dummy = TRUE) %>%
+  group_by(country_name) %>% 
+  mutate(summe = sum(pop_cat_Cabinet + pop_cat_HOG + pop_cat_Opposition)) %>% 
+  filter(summe != 0)  %>% 
+  dplyr::select(-summe) %>% 
+  ungroup() %>% 
+  
+  rename(pop_cab_caus =  pop_cat_Cabinet, pop_HOG_caus = pop_cat_HOG, pop_Opp_caus = pop_cat_Opposition) %>%  
+  
+  mutate_at(vars(ends_with("context"), -classification_context), funs(transformTukey((.-min(., na.rm=T)) + 1, statistic = 1, plotit=F, quiet=T)) ) %>% 
+  
+  group_by(country_name) %>% 
+  mutate_at(vars(ends_with("caus")), funs(lag = dplyr::lag(., 1))) %>% 
+  #mutate_at(vars(ends_with("caus")), funs(lag2 = dplyr::lag(., 2))) %>% 
+  
+  mutate_at(vars(ends_with("context"), -classification_context), funs(lag = dplyr::lag(., 1))) %>% 
+  mutate_at(vars(ends_with("context"), -classification_context), funs(lag2 = dplyr::lag(., 2))) %>% 
+  mutate_at(vars(ends_with("context"), -classification_context), funs(lag3 = dplyr::lag(., 3))) %>% 
+  ungroup() %>% 
+  mutate(trend = as.numeric(year - min(year))) 

@@ -160,10 +160,11 @@ ppc_dens_overlay(y = dec_f$data$decision_freedom_context,
 # Residuals
 
 plot_residuals(dec_f, "Decision Freedrom") # Peru, Turkey, Venezuela, USA, Hungary
-# plot_residuals(dec_f, "Decision Freedrom", all=T) 
 plot_residuals(dec_e, "Decision Equality") # Peru, Nicaragua, Venezuela
-# plot_residuals(dec_e, "Decision Equality", all=T)
 plot_residuals(dec_c, "Decision Control") # Peru, Venezuela
+
+plot_residuals_fitted(dec_f, all=T)
+plot_residuals_fitted(dec_e, all=T)
 
 plot_residuals(int_f, "Int Freedom") # Turkey, Venezuela, Peru
 plot_residuals(int_e, "Int Equality") # Turkey, Brazil, Venezuela, India
@@ -183,9 +184,13 @@ plot_residuals(rs_c, "RS Control")
 
 # Without Outliers ####
 make_brms_sub = function(model) {
-  dataset =  get_residuals(model) %>% 
-    filter(residuals < 3, residuals > -3)
+  # dataset =  get_residuals(model) %>%
+  #   filter(residuals < 3, residuals > -3)
+
+  dataset =  model$data %>%
+    filter(country_name != "Peru", country_name != "Venezuela", country_name != "Nicaragua")
   return(dataset)
+
 }
 
 
@@ -224,24 +229,26 @@ rs_e_sub = TSCS_reg_brms("rule_settlement_equality_context", lag=1,
 rs_c_sub = TSCS_reg_brms("rule_settlement_control_context", lag=2, 
                          make_brms_sub(rs_c))
 
+# saveRDS(rs_c_sub, file="brmsModels/rs_c_sub_wPVN.RDS")
 
-saveRDS(dec_f_sub, file="brmsModels/dec_f_sub.RDS")
-saveRDS(dec_e_sub, file="brmsModels/dec_e_sub.RDS")
-saveRDS(dec_c_sub, file="brmsModels/dec_c_sub.RDS")
-saveRDS(int_f_sub, file="brmsModels/int_f_sub.RDS")
-saveRDS(int_e_sub, file="brmsModels/int_e_sub.RDS")
-saveRDS(int_c_sub, file="brmsModels/int_c_sub.RDS")
-saveRDS(com_f_sub, file="brmsModels/com_f_sub.RDS")
-saveRDS(com_e_sub, file="brmsModels/com_e_sub.RDS")
-saveRDS(com_c_sub, file="brmsModels/com_c_sub.RDS")
-saveRDS(rights_f_sub, file="brmsModels/rights_f_sub.RDS")
-saveRDS(rights_e_sub, file="brmsModels/rights_e_sub.RDS")
-saveRDS(rights_c_sub, file="brmsModels/rights_c_sub.RDS")
-saveRDS(rs_f_sub, file="brmsModels/rs_f_sub.RDS")
-saveRDS(rs_e_sub, file="brmsModels/rs_e_sub.RDS")
-saveRDS(rs_c_sub, file="brmsModels/rs_c_sub.RDS")
+saveRDS(dec_f_sub, file="brmsModels/dec_f_sub_wPVN.RDS")
+saveRDS(dec_e_sub, file="brmsModels/dec_e_sub_wPVN.RDS")
+saveRDS(dec_c_sub, file="brmsModels/dec_c_sub_wPVN.RDS")
+saveRDS(int_f_sub, file="brmsModels/int_f_sub_wPVN.RDS")
+saveRDS(int_e_sub, file="brmsModels/int_e_sub_wPVN.RDS")
+saveRDS(int_c_sub, file="brmsModels/int_c_sub_wPVN.RDS")
+saveRDS(com_f_sub, file="brmsModels/com_f_sub_wPVN.RDS")
+saveRDS(com_e_sub, file="brmsModels/com_e_sub_wPVN.RDS")
+saveRDS(com_c_sub, file="brmsModels/com_c_sub_wPVN.RDS")
+saveRDS(rights_f_sub, file="brmsModels/rights_f_sub_wPVN.RDS")
+saveRDS(rights_e_sub, file="brmsModels/rights_e_sub_wPVN.RDS")
+saveRDS(rights_c_sub, file="brmsModels/rights_c_sub_wPVN.RDS")
+saveRDS(rs_f_sub, file="brmsModels/rs_f_sub_wPVN.RDS")
+saveRDS(rs_e_sub, file="brmsModels/rs_e_sub_wPVN.RDS")
+saveRDS(rs_c_sub, file="brmsModels/rs_c_sub_wPVN.RDS")
 
 # Load Models
+# generelle Ausreßer eliminiert: Residuen > 3 & <-3
 dec_f_sub = readRDS(file="brmsModels/dec_f_sub.RDS")
 dec_e_sub = readRDS(file="brmsModels/dec_e_sub.RDS")
 dec_c_sub = readRDS(file="brmsModels/dec_c_sub.RDS")
@@ -257,6 +264,23 @@ rights_c_sub = readRDS(file="brmsModels/rights_c_sub.RDS")
 rs_f_sub = readRDS(file="brmsModels/rs_f_sub.RDS")
 rs_e_sub = readRDS(file="brmsModels/rs_e_sub.RDS")
 rs_c_sub = readRDS(file="brmsModels/rs_c_sub.RDS")
+
+# Ohne Peru, Venezuela und Nicaragua
+dec_f_sub = readRDS(file="brmsModels/dec_f_sub_wPVN.RDS")
+dec_e_sub = readRDS(file="brmsModels/dec_e_sub_wPVN.RDS")
+dec_c_sub = readRDS(file="brmsModels/dec_c_sub_wPVN.RDS")
+int_f_sub = readRDS(file="brmsModels/int_f_sub_wPVN.RDS")
+int_e_sub = readRDS(file="brmsModels/int_e_sub_wPVN.RDS")
+int_c_sub = readRDS(file="brmsModels/int_c_sub_wPVN.RDS")
+com_f_sub = readRDS(file="brmsModels/com_f_sub_wPVN.RDS")
+com_e_sub = readRDS(file="brmsModels/com_e_sub_wPVN.RDS")
+com_c_sub = readRDS(file="brmsModels/com_c_sub_wPVN.RDS")
+rights_f_sub = readRDS(file="brmsModels/rights_f_sub_wPVN.RDS")
+rights_e_sub = readRDS(file="brmsModels/rights_e_sub_wPVN.RDS")
+rights_c_sub = readRDS(file="brmsModels/rights_c_sub_wPVN.RDS")
+rs_f_sub = readRDS(file="brmsModels/rs_f_sub_wPVN.RDS")
+rs_e_sub = readRDS(file="brmsModels/rs_e_sub_wPVN.RDS")
+rs_c_sub = readRDS(file="brmsModels/rs_c_sub_wPVN.RDS")
 
 
 
@@ -280,6 +304,10 @@ make_LRE(rs_c_sub, "rule_settlement_control_context", credmass = 0.95)
 plot_residuals(dec_f_sub, "Decision Freedrom Sub")
 plot_residuals(dec_e_sub, "Decision Equality Sub") 
 plot_residuals(dec_c_sub, "Decision Control Sub")
+
+plot_residuals(dec_e_sub, "Decision Equality Sub", all=T) 
+plot_residuals_fitted(dec_e_sub, all=T)
+
 
 plot_residuals(int_f_sub, "Int Freedom Sub") 
 plot_residuals(int_e_sub, "Int Equality Sub") 

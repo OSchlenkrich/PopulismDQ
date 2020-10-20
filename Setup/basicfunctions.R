@@ -629,7 +629,8 @@ TSCS_reg_brms = function(variable, lag=1, dataset = brms_ml_data) {
                  iter = 1500,
                  prior =priors,
                  chains=5,
-                 backend = "cmdstanr")
+                 backend = "cmdstanr",
+                 threads = threading(2))
   
   
   return(TSCS_obj)
@@ -671,21 +672,23 @@ plot_residuals = function(model, plottitle = NULL, all=F) {
   if (all == F) {
     p1 = modeldata %>% 
       mutate(year = as.numeric(levels(year))[year]) %>% 
+      
       ggplot(aes(x=year, y = residuals, grp=country_name)) +
       geom_line(size=1.1) +
-      geom_smooth(se=F) +
-      
+      geom_smooth(se=F, alpha=0.5) +
       geom_hline(yintercept=c(-2,2), linetype ="dashed") +
       facet_wrap(country_name ~ .)  +
       theme_bw() +
       ggtitle(plottitle) +
       xlab("") +
-      ylab("Pearson Residuals")
+      ylab("Pearson Residuals") 
+    
   } else {
     p1 = modeldata %>% 
       mutate(year = as.numeric(levels(year))[year]) %>% 
+      
       ggplot(aes(x=year, y = residuals, grp=country_name)) +
-      geom_smooth(size=1.1, se=F) +
+      geom_smooth(size=1.1, se=F, alpha=0.5) +
       geom_point(size=1.1) +
       geom_hline(yintercept=c(-2,2), linetype ="dashed") +
       theme_bw() +
@@ -718,6 +721,38 @@ plot_residualsX = function(model, X_lab, plottitle = NULL, all=F) {
   } else {
     p1 = modeldata %>% 
       ggplot(aes(x=X, y = residuals, grp=country_name)) +
+      geom_point(size=1.1) +
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  }
+  
+  return(p1)
+}
+
+
+plot_residuals_fitted = function(model, plottitle = NULL, all=F) {
+  modeldata = model$data 
+  
+  modeldata = modeldata %>% 
+    bind_cols(residuals = data.frame(residuals(model, type="pearson"))[,1]) %>% 
+    bind_cols(fitted = data.frame(fitted(model))[,1]) 
+  
+  if (all == F) {
+    p1 = modeldata %>% 
+      ggplot(aes(x=fitted, y = residuals, grp=country_name)) +
+      geom_point(size=1.1) +
+      geom_hline(yintercept=c(-2,2), linetype ="dashed") +
+      facet_wrap(country_name ~ .)  +
+      theme_bw() +
+      ggtitle(plottitle) +
+      xlab("") +
+      ylab("Pearson Residuals")
+  } else {
+    p1 = modeldata %>% 
+      ggplot(aes(x=fitted, y = residuals, grp=country_name)) +
       geom_point(size=1.1) +
       geom_hline(yintercept=c(-2,2), linetype ="dashed") +
       theme_bw() +
