@@ -47,6 +47,23 @@ TSCS_data_trans %>%
   facet_wrap(name ~ ., scales="free")
 
 TSCS_data_trans %>% 
+  select_at(vars(ends_with("communication_control_context"), country_name, -classification_context)) %>% 
+  pivot_longer(cols = ends_with("communication_control_context")) %>% 
+  group_by(name) %>% 
+  #mutate(value = transformTukey(value, statistic = 2, plotit=F, quiet=T)) %>%
+  ungroup() %>% 
+  ggplot(aes(x=value, fill=name)) +
+  geom_histogram() +
+  facet_wrap(country_name ~ ., scales="free")
+
+TSCS_data_trans %>% 
+  select_at(vars(ends_with("communication_control_context"), country_name, pop_HOG_caus, -classification_context)) %>% 
+  ggplot(aes(x=pop_HOG_caus, y=communication_control_context)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+
+TSCS_data_trans %>% 
   select_at(vars(ends_with("caus"), -classification_context)) %>% 
   pivot_longer(cols = everything()) %>% 
   group_by(name) %>% 
@@ -55,6 +72,8 @@ TSCS_data_trans %>%
   ggplot(aes(x=value)) +
   geom_histogram() +
   facet_wrap(name ~ ., scales="free")
+
+
 
 # Check Unit Root
 round(confint(TSCS_reg("decision_freedom_context", lag=1)[[2]]),3)
@@ -82,7 +101,7 @@ round(confint(TSCS_reg("rule_settlement_control_context", lag=1)[[2]]),3)
 
 get_autocorrelation("decision_freedom_context", lag=2)
 get_autocorrelation("decision_equality_context", lag=1)
-get_autocorrelation("decision_control_context", lag=1)
+get_autocorrelation("decision_control_context", lag=2)
 
 get_autocorrelation("intermediate_freedom_context", lag=2)
 get_autocorrelation("intermediate_equality_context", lag=1)
@@ -104,7 +123,7 @@ get_autocorrelation("rule_settlement_control_context", lag=2)
 # Results
 m1 = TSCS_reg("decision_freedom_context", lag=2)
 m2 = TSCS_reg("decision_equality_context", lag=1)
-m3 = TSCS_reg("decision_control_context", lag=1)
+m3 = TSCS_reg("decision_control_context", lag=2)
 
 m4 = TSCS_reg("intermediate_freedom_context", lag=2)
 m5 = TSCS_reg("intermediate_equality_context", lag=1)

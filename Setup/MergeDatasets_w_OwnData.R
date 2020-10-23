@@ -124,8 +124,7 @@ TSCS_data_trans = DMX_populist %>%
   mutate(classification_context = ifelse(country_name == "Mexico" & year < 1996, "", classification_context),
          classification_context = ifelse(country_name == "Estonia" & year <= 1991, "", classification_context),
          classification_context = ifelse(country_name == "Turkey" & year < 2000, "", classification_context),
-         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context),
-         intermediate_freedom_context = ifelse(country_name == "Latvia" & year <= 1992, NA, intermediate_freedom_context)
+         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context)
          ) %>%
   filter(year >= 1990, classification_context != "", classification_context != "Hard Autocracy") %>% 
   dummy_cols(., "pop_cat", remove_first_dummy = TRUE) %>%
@@ -155,8 +154,7 @@ TSCS_data_transformed = DMX_populist %>%
   mutate(classification_context = ifelse(country_name == "Mexico" & year < 1996, "", classification_context),
          classification_context = ifelse(country_name == "Estonia" & year <= 1991, "", classification_context),
          classification_context = ifelse(country_name == "Turkey" & year < 2000, "", classification_context),
-         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context),
-         intermediate_freedom_context = ifelse(country_name == "Latvia" & year <= 1992, NA, intermediate_freedom_context)
+         decision_control_context = ifelse(country_name == "Poland" & year == 1990, NA, decision_control_context)
   ) %>%
   filter(year >= 1990, classification_context != "", classification_context != "Hard Autocracy") %>% 
   dummy_cols(., "pop_cat", remove_first_dummy = TRUE) %>%

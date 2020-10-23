@@ -55,7 +55,7 @@ brms_ml_data %>%
 
 dec_f = TSCS_reg_brms("decision_freedom_context", lag=2)
 dec_e = TSCS_reg_brms("decision_equality_context", lag=1)
-dec_c = TSCS_reg_brms("decision_control_context", lag=1)
+dec_c = TSCS_reg_brms("decision_control_context", lag=2)
 
 
 int_f = TSCS_reg_brms("intermediate_freedom_context", lag=2)
@@ -144,43 +144,60 @@ make_LRE(rs_f, "rule_settlement_freedom_context", credmass = 0.9)
 make_LRE(rs_e, "rule_settlement_equality_context", credmass = 0.9)
 make_LRE(rs_c, "rule_settlement_control_context", credmass = 0.9)
 
-summary(int_e, prob=0.9)
-summary(com_e, prob=0.9)
-summary(rights_e, prob=0.9)
-summary(rs_e, prob=0.9)
-
+p1 = make_LRE_single(int_c, "intermediate_control_context")
+p2 = make_LRE_single(rs_e, "rule_settlement_equality_context")
+p3 = make_LRE_single(rs_c, "rule_settlement_control_context")
+p4 = make_LRE_single(rights_f, "rights_freedom_context")
+p5 = make_LRE_single(com_f, "communication_freedom_context")
+p6 = make_LRE_single(com_c, "communication_control_context")
+p7 = make_LRE_single(dec_c, "decision_control_context")
 
 ###
 
 
 library(bayesplot)
-ppc_dens_overlay(y = dec_f$data$decision_freedom_context,
-                 yrep = posterior_predict(dec_f)[50:150, ])
+y_rep = posterior_predict(dec_f)[50:150, ]
+
+ppc_data = dec_f$data %>% 
+  select(country_name, year, decision_freedom_context) %>% 
+  bind_cols(data.frame(y_rep = t(y_rep))) 
+
+
+Y = ppc_data %>% 
+  filter(year == 1995) %>% 
+  pull(decision_freedom_context)
+Y_rep = ppc_data %>% 
+  filter(year == 1995) %>% 
+  select_at(vars(matches("y_rep"))) %>% 
+  t() %>% 
+  as.matrix()
+
+
+ppc_dens_overlay(y = Y,
+                 yrep = Y_rep)
+
 
 # Residuals
 
-plot_residuals(dec_f, "Decision Freedrom") # Peru, Turkey, Venezuela, USA, Hungary
-plot_residuals(dec_e, "Decision Equality") # Peru, Nicaragua, Venezuela
-plot_residuals(dec_c, "Decision Control") # Peru, Venezuela
+plot_residuals_fitted(dec_f, "Decision Freedrom") # Peru, Turkey, Venezuela, USA, Hungary
+plot_residuals_fitted(dec_e, "Decision Equality") # Peru, Nicaragua, Venezuela
+plot_residuals_fitted(dec_c, "Decision Control") # Peru, Venezuela
 
-plot_residuals_fitted(dec_f, all=T)
-plot_residuals_fitted(dec_e, all=T)
+plot_residuals_fitted(int_f, "Int Freedom") # Turkey, Venezuela, Peru
+plot_residuals_fitted(int_e, "Int Equality") # Turkey, Brazil, Venezuela, India
+plot_residuals_fitted(int_c, "Int Control")# Ecuador, Venezuela, Peru
 
-plot_residuals(int_f, "Int Freedom") # Turkey, Venezuela, Peru
-plot_residuals(int_e, "Int Equality") # Turkey, Brazil, Venezuela, India
-plot_residuals(int_c, "Int Control")# Ecuador, Venezuela, Peru
+plot_residuals_fitted(com_f, "Com Freedom") # Ecuador, Venezuela, Peru
+plot_residuals_fitted(com_e, "Com Equality") # Ecuador, Venezuela, Peru
+plot_residuals_fitted(com_c, "Com Control")
 
-plot_residuals(com_f, "Com Freedom") # Ecuador, Venezuela, Peru
-plot_residuals(com_e, "Com Equality") # Ecuador, Venezuela, Peru
-plot_residuals(com_c, "Com Control")
+plot_residuals_fitted(rights_f, "Rights Freedom")
+plot_residuals_fitted(rights_e, "Rights Equality")
+plot_residuals_fitted(rights_c, "Rights Control")
 
-plot_residuals(rights_f, "Rights Freedom")
-plot_residuals(rights_e, "Rights Equality")
-plot_residuals(rights_c, "Rights Control")
-
-plot_residuals(rs_f, "RS Freedom")
-plot_residuals(rs_e, "RS Equality")
-plot_residuals(rs_c, "RS Control")
+plot_residuals_fitted(rs_f, "RS Freedom")
+plot_residuals_fitted(rs_e, "RS Equality")
+plot_residuals_fitted(rs_c, "RS Control")
 
 # Without Outliers ####
 make_brms_sub = function(model) {
@@ -198,7 +215,7 @@ dec_f_sub = TSCS_reg_brms("decision_freedom_context", lag=2,
                           make_brms_sub(dec_f))
 dec_e_sub = TSCS_reg_brms("decision_equality_context", lag=1, 
                           make_brms_sub(dec_e))
-dec_c_sub = TSCS_reg_brms("decision_control_context", lag=1, 
+dec_c_sub = TSCS_reg_brms("decision_control_context", lag=2, 
                           make_brms_sub(dec_c))
 
 int_f_sub = TSCS_reg_brms("intermediate_freedom_context", lag=2, 

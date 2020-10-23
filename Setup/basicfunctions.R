@@ -663,6 +663,19 @@ make_LRE = function(model, var, credmass = 0.95, unit=1, justHDI = F) {
   return(ggarrange(p1,p2,p3, ncol=3) %>%  annotate_figure(var))
 }
 
+make_LRE_single = function(model, var, credmass = 0.95, unit=1, justHDI = F) {
+  library(HDInterval)
+  library(ggpubr)
+  
+  p1 = lag_distribution_both(model, var, 
+                             IndV_label = "pop_HOG_caus" , 
+                             dep_label = var, 
+                             unit = unit, time_periods=4, ci=credmass, ecm = F, justHDI = justHDI)  + 
+    ggtitle(enc2utf8("Regierungschef/Präsident")) +
+    ylab(paste("Effekt auf", var))
+  
+  return(p1)
+}
 
 plot_residuals = function(model, plottitle = NULL, all=F) {
   modeldata = model$data 
@@ -748,7 +761,7 @@ plot_residuals_fitted = function(model, plottitle = NULL, all=F) {
       facet_wrap(country_name ~ .)  +
       theme_bw() +
       ggtitle(plottitle) +
-      xlab("") +
+      xlab("Predicted Value") +
       ylab("Pearson Residuals")
   } else {
     p1 = modeldata %>% 
@@ -757,7 +770,7 @@ plot_residuals_fitted = function(model, plottitle = NULL, all=F) {
       geom_hline(yintercept=c(-2,2), linetype ="dashed") +
       theme_bw() +
       ggtitle(plottitle) +
-      xlab("") +
+      xlab("Predicted Value") +
       ylab("Pearson Residuals")
   }
   
