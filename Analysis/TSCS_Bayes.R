@@ -53,7 +53,7 @@ brms_ml_data %>%
 
 # Bayes Results ####
 
-dec_f = TSCS_reg_brms("decision_freedom_context", lag=2)
+dec_f = TSCS_reg_brms("decision_freedom_context", lag=1)
 dec_e = TSCS_reg_brms("decision_equality_context", lag=1)
 dec_c = TSCS_reg_brms("decision_control_context", lag=2)
 
@@ -63,7 +63,7 @@ int_e = TSCS_reg_brms("intermediate_equality_context", lag=1)
 int_c = TSCS_reg_brms("intermediate_control_context", lag=2)
 
 com_f = TSCS_reg_brms("communication_freedom_context", lag=2)
-com_e = TSCS_reg_brms("communication_equality_context", lag=1)
+com_e = TSCS_reg_brms("communication_equality_context", lag=2)
 com_c = TSCS_reg_brms("communication_control_context", lag=2)
 
 rights_f = TSCS_reg_brms("rights_freedom_context", lag=2)
@@ -111,46 +111,6 @@ rs_e = readRDS(file="brmsModels/rs_e.RDS")
 rs_c = readRDS(file="brmsModels/rs_c.RDS")
 
 
-# LRE ####
-make_LRE(dec_f, "decision_freedom_context")
-make_LRE(dec_e, "decision_equality_context")
-make_LRE(dec_c, "decision_control_context")
-make_LRE(int_f, "intermediate_freedom_context")
-make_LRE(int_e, "intermediate_equality_context")
-make_LRE(int_c, "intermediate_control_context")
-make_LRE(com_f, "communication_freedom_context")
-make_LRE(com_e, "communication_equality_context")
-make_LRE(com_c, "communication_control_context")
-make_LRE(rights_f, "rights_freedom_context")
-make_LRE(rights_e, "rights_equality_context")
-make_LRE(rights_c, "rights_control_context")
-make_LRE(rs_f, "rule_settlement_freedom_context")
-make_LRE(rs_e, "rule_settlement_equality_context")
-make_LRE(rs_c, "rule_settlement_control_context")
-
-make_LRE(dec_f, "decision_freedom_context", credmass = 0.9)
-make_LRE(dec_e, "decision_equality_context", credmass = 0.9)
-make_LRE(dec_c, "decision_control_context", credmass = 0.9)
-make_LRE(int_f, "intermediate_freedom_context", credmass = 0.9)
-make_LRE(int_e, "intermediate_equality_context", credmass = 0.9)
-make_LRE(int_c, "intermediate_control_context", credmass = 0.9)
-make_LRE(com_f, "communication_freedom_context", credmass = 0.9)
-make_LRE(com_e, "communication_equality_context", credmass = 0.9)
-make_LRE(com_c, "communication_control_context", credmass = 0.9)
-make_LRE(rights_f, "rights_freedom_context", credmass = 0.9)
-make_LRE(rights_e, "rights_equality_context", credmass = 0.9)
-make_LRE(rights_c, "rights_control_context", credmass = 0.9)
-make_LRE(rs_f, "rule_settlement_freedom_context", credmass = 0.9)
-make_LRE(rs_e, "rule_settlement_equality_context", credmass = 0.9)
-make_LRE(rs_c, "rule_settlement_control_context", credmass = 0.9)
-
-p1 = make_LRE_single(int_c, "intermediate_control_context")
-p2 = make_LRE_single(rs_e, "rule_settlement_equality_context")
-p3 = make_LRE_single(rs_c, "rule_settlement_control_context")
-p4 = make_LRE_single(rights_f, "rights_freedom_context")
-p5 = make_LRE_single(com_f, "communication_freedom_context")
-p6 = make_LRE_single(com_c, "communication_control_context")
-p7 = make_LRE_single(dec_c, "decision_control_context")
 
 ###
 
@@ -201,17 +161,13 @@ plot_residuals_fitted(rs_c, "RS Control")
 
 # Without Outliers ####
 make_brms_sub = function(model) {
-  # dataset =  get_residuals(model) %>%
-  #   filter(residuals < 3, residuals > -3)
-
   dataset =  model$data %>%
     filter(country_name != "Peru", country_name != "Venezuela", country_name != "Nicaragua")
   return(dataset)
-
+  
 }
 
-
-dec_f_sub = TSCS_reg_brms("decision_freedom_context", lag=2, 
+dec_f_sub = TSCS_reg_brms("decision_freedom_context", lag=1, 
                           make_brms_sub(dec_f))
 dec_e_sub = TSCS_reg_brms("decision_equality_context", lag=1, 
                           make_brms_sub(dec_e))
@@ -227,7 +183,7 @@ int_c_sub = TSCS_reg_brms("intermediate_control_context", lag=2,
 
 com_f_sub = TSCS_reg_brms("communication_freedom_context", lag=2, 
                           make_brms_sub(com_f))
-com_e_sub = TSCS_reg_brms("communication_equality_context", lag=1, 
+com_e_sub = TSCS_reg_brms("communication_equality_context", lag=2, 
                           make_brms_sub(com_e))
 com_c_sub = TSCS_reg_brms("communication_control_context", lag=2, 
                           make_brms_sub(com_c))
@@ -264,23 +220,84 @@ saveRDS(rs_f_sub, file="brmsModels/rs_f_sub_wPVN.RDS")
 saveRDS(rs_e_sub, file="brmsModels/rs_e_sub_wPVN.RDS")
 saveRDS(rs_c_sub, file="brmsModels/rs_c_sub_wPVN.RDS")
 
+
+# generelle Ausreißer
+make_brms_sub_res = function(model) {
+  dataset =  get_residuals(model) %>%
+    filter(residuals < 3, residuals > -3)
+  return(dataset)
+  
+}
+
+dec_f_sub_res = TSCS_reg_brms("decision_freedom_context", lag=1, 
+                          make_brms_sub_res(dec_f))
+dec_e_sub_res = TSCS_reg_brms("decision_equality_context", lag=1, 
+                          make_brms_sub_res(dec_e))
+dec_c_sub_res = TSCS_reg_brms("decision_control_context", lag=2, 
+                          make_brms_sub_res(dec_c))
+
+int_f_sub_res = TSCS_reg_brms("intermediate_freedom_context", lag=2, 
+                          make_brms_sub_res(int_f))
+int_e_sub_res = TSCS_reg_brms("intermediate_equality_context", lag=1, 
+                          make_brms_sub_res(int_e))
+int_c_sub_res = TSCS_reg_brms("intermediate_control_context", lag=2, 
+                          make_brms_sub_res(int_c))
+
+com_f_sub_res = TSCS_reg_brms("communication_freedom_context", lag=2, 
+                          make_brms_sub_res(com_f))
+com_e_sub_res = TSCS_reg_brms("communication_equality_context", lag=2, 
+                          make_brms_sub_res(com_e))
+com_c_sub_res = TSCS_reg_brms("communication_control_context", lag=2, 
+                          make_brms_sub_res(com_c))
+
+rights_f_sub_res = TSCS_reg_brms("rights_freedom_context", lag=2, 
+                             make_brms_sub_res(rights_f))
+rights_e_sub_res = TSCS_reg_brms("rights_equality_context", lag=2, 
+                             make_brms_sub_res(rights_e))
+rights_c_sub_res = TSCS_reg_brms("rights_control_context", lag=2, 
+                             make_brms_sub_res(rights_c))
+
+rs_f_sub_res = TSCS_reg_brms("rule_settlement_freedom_context", lag=2, 
+                         make_brms_sub_res(rs_f))
+rs_e_sub_res = TSCS_reg_brms("rule_settlement_equality_context", lag=1, 
+                         make_brms_sub_res(rs_e))
+rs_c_sub_res = TSCS_reg_brms("rule_settlement_control_context", lag=2, 
+                         make_brms_sub_res(rs_c))
+
+saveRDS(dec_f_sub_res, file="brmsModels/dec_f_sub.RDS")
+saveRDS(dec_e_sub_res, file="brmsModels/dec_e_sub.RDS")
+saveRDS(dec_c_sub_res, file="brmsModels/dec_c_sub.RDS")
+saveRDS(int_f_sub_res, file="brmsModels/int_f_sub.RDS")
+saveRDS(int_e_sub_res, file="brmsModels/int_e_sub.RDS")
+saveRDS(int_c_sub_res, file="brmsModels/int_c_sub.RDS")
+saveRDS(com_f_sub_res, file="brmsModels/com_f_sub.RDS")
+saveRDS(com_e_sub_res, file="brmsModels/com_e_sub.RDS")
+saveRDS(com_c_sub_res, file="brmsModels/com_c_sub.RDS")
+saveRDS(rights_f_sub_res, file="brmsModels/rights_f_sub.RDS")
+saveRDS(rights_e_sub_res, file="brmsModels/rights_e_sub.RDS")
+saveRDS(rights_c_sub_res, file="brmsModels/rights_c_sub.RDS")
+saveRDS(rs_f_sub_res, file="brmsModels/rs_f_sub.RDS")
+saveRDS(rs_e_sub_res, file="brmsModels/rs_e_sub.RDS")
+saveRDS(rs_c_sub_res, file="brmsModels/rs_c_sub.RDS")
+
+
 # Load Models
 # generelle Ausreßer eliminiert: Residuen > 3 & <-3
-dec_f_sub = readRDS(file="brmsModels/dec_f_sub.RDS")
-dec_e_sub = readRDS(file="brmsModels/dec_e_sub.RDS")
-dec_c_sub = readRDS(file="brmsModels/dec_c_sub.RDS")
-int_f_sub = readRDS(file="brmsModels/int_f_sub.RDS")
-int_e_sub = readRDS(file="brmsModels/int_e_sub.RDS")
-int_c_sub = readRDS(file="brmsModels/int_c_sub.RDS")
-com_f_sub = readRDS(file="brmsModels/com_f_sub.RDS")
-com_e_sub = readRDS(file="brmsModels/com_e_sub.RDS")
-com_c_sub = readRDS(file="brmsModels/com_c_sub.RDS")
-rights_f_sub = readRDS(file="brmsModels/rights_f_sub.RDS")
-rights_e_sub = readRDS(file="brmsModels/rights_e_sub.RDS")
-rights_c_sub = readRDS(file="brmsModels/rights_c_sub.RDS")
-rs_f_sub = readRDS(file="brmsModels/rs_f_sub.RDS")
-rs_e_sub = readRDS(file="brmsModels/rs_e_sub.RDS")
-rs_c_sub = readRDS(file="brmsModels/rs_c_sub.RDS")
+dec_f_sub_res = readRDS(file="brmsModels/dec_f_sub.RDS")
+dec_e_sub_res = readRDS(file="brmsModels/dec_e_sub.RDS")
+dec_c_sub_res = readRDS(file="brmsModels/dec_c_sub.RDS")
+int_f_sub_res = readRDS(file="brmsModels/int_f_sub.RDS")
+int_e_sub_res = readRDS(file="brmsModels/int_e_sub.RDS")
+int_c_sub_res = readRDS(file="brmsModels/int_c_sub.RDS")
+com_f_sub_res = readRDS(file="brmsModels/com_f_sub.RDS")
+com_e_sub_res = readRDS(file="brmsModels/com_e_sub.RDS")
+com_c_sub_res = readRDS(file="brmsModels/com_c_sub.RDS")
+rights_f_sub_res = readRDS(file="brmsModels/rights_f_sub.RDS")
+rights_e_sub_res = readRDS(file="brmsModels/rights_e_sub.RDS")
+rights_c_sub_res = readRDS(file="brmsModels/rights_c_sub.RDS")
+rs_f_sub_res = readRDS(file="brmsModels/rs_f_sub.RDS")
+rs_e_sub_res = readRDS(file="brmsModels/rs_e_sub.RDS")
+rs_c_sub_res = readRDS(file="brmsModels/rs_c_sub.RDS")
 
 # Ohne Peru, Venezuela und Nicaragua
 dec_f_sub = readRDS(file="brmsModels/dec_f_sub_wPVN.RDS")
@@ -299,23 +316,6 @@ rs_f_sub = readRDS(file="brmsModels/rs_f_sub_wPVN.RDS")
 rs_e_sub = readRDS(file="brmsModels/rs_e_sub_wPVN.RDS")
 rs_c_sub = readRDS(file="brmsModels/rs_c_sub_wPVN.RDS")
 
-
-
-make_LRE(dec_f_sub, "decision_freedom_context", credmass = 0.95)
-make_LRE(dec_e_sub, "decision_equality_context", credmass = 0.95)
-make_LRE(dec_c_sub, "decision_control_context", credmass = 0.95)
-make_LRE(int_f_sub, "intermediate_freedom_context", credmass = 0.95)
-make_LRE(int_e_sub, "intermediate_equality_context", credmass = 0.95)
-make_LRE(int_c_sub, "intermediate_control_context", credmass = 0.95)
-make_LRE(com_f_sub, "communication_freedom_context", credmass = 0.95)
-make_LRE(com_e_sub, "communication_equality_context", credmass = 0.95)
-make_LRE(com_c_sub, "communication_control_context", credmass = 0.95)
-make_LRE(rights_f_sub, "rights_freedom_context", credmass = 0.95)
-make_LRE(rights_e_sub, "rights_equality_context", credmass = 0.95)
-make_LRE(rights_c_sub, "rights_control_context", credmass = 0.95)
-make_LRE(rs_f_sub, "rule_settlement_freedom_context", credmass = 0.95)
-make_LRE(rs_e_sub, "rule_settlement_equality_context", credmass = 0.95)
-make_LRE(rs_c_sub, "rule_settlement_control_context", credmass = 0.95)
 
 # Residuals
 plot_residuals(dec_f_sub, "Decision Freedrom Sub")
@@ -341,3 +341,108 @@ plot_residuals(rights_c_sub, "Rights Control Sub")
 plot_residuals(rs_f_sub, "RS Freedom Sub")
 plot_residuals(rs_e_sub, "RS Equality Sub")
 plot_residuals(rs_c_sub, "RS Control Sub")
+
+
+
+#
+# LRE ####
+make_LRE(dec_f, "decision_freedom_context")
+make_LRE(dec_f_sub, "decision_freedom_context", credmass = 0.95)
+make_LRE(dec_f_sub_res, "decision_freedom_context", credmass = 0.95)
+
+make_LRE(dec_e, "decision_equality_context")
+make_LRE(dec_e_sub, "decision_equality_context", credmass = 0.95)
+make_LRE(dec_e_sub_res, "decision_equality_context", credmass = 0.95)
+
+make_LRE(dec_c, "decision_control_context")
+make_LRE(dec_c_sub, "decision_control_context", credmass = 0.95)
+make_LRE(dec_c_sub_res, "decision_control_context", credmass = 0.95)
+
+make_LRE(int_f, "intermediate_freedom_context")
+make_LRE(int_f_sub, "intermediate_freedom_context", credmass = 0.95)
+make_LRE(int_f_sub_res, "intermediate_freedom_context", credmass = 0.95)
+
+
+make_LRE(int_e, "intermediate_equality_context")
+make_LRE(int_e_sub, "intermediate_equality_context", credmass = 0.95)
+make_LRE(int_e_sub_res, "intermediate_equality_context", credmass = 0.95)
+
+
+make_LRE(int_c, "intermediate_control_context")
+make_LRE(int_c_sub, "intermediate_control_context", credmass = 0.95)
+make_LRE(int_c_sub_res, "intermediate_control_context", credmass = 0.95)
+
+
+make_LRE(com_f, "communication_freedom_context")
+make_LRE(com_f_sub, "communication_freedom_context", credmass = 0.95)
+make_LRE(com_f_sub_res, "communication_freedom_context", credmass = 0.95)
+
+
+make_LRE(com_e, "communication_equality_context")
+make_LRE(com_e_sub, "communication_equality_context", credmass = 0.95)
+make_LRE(com_e_sub_res, "communication_equality_context", credmass = 0.95)
+
+
+make_LRE(com_c, "communication_control_context")
+make_LRE(com_c_sub, "communication_control_context", credmass = 0.95)
+make_LRE(com_c_sub_res, "communication_control_context", credmass = 0.95)
+
+
+make_LRE(rights_f, "rights_freedom_context")
+make_LRE(rights_f_sub, "rights_freedom_context", credmass = 0.95)
+make_LRE(rights_f_sub_res, "rights_freedom_context", credmass = 0.95)
+
+
+make_LRE(rights_e, "rights_equality_context")
+make_LRE(rights_e_sub, "rights_equality_context", credmass = 0.95)
+make_LRE(rights_e_sub_res, "rights_equality_context", credmass = 0.95)
+
+
+make_LRE(rights_c, "rights_control_context")
+make_LRE(rights_c_sub, "rights_control_context", credmass = 0.95)
+make_LRE(rights_c_sub_res, "rights_control_context", credmass = 0.95)
+
+
+make_LRE(rs_f, "rule_settlement_freedom_context")
+make_LRE(rs_f_sub, "rule_settlement_freedom_context", credmass = 0.95)
+make_LRE(rs_f_sub_res, "rule_settlement_freedom_context", credmass = 0.95)
+
+
+make_LRE(rs_e, "rule_settlement_equality_context")
+make_LRE(rs_e_sub, "rule_settlement_equality_context", credmass = 0.95)
+make_LRE(rs_e_sub_res, "rule_settlement_equality_context", credmass = 0.95)
+
+
+make_LRE(rs_c, "rule_settlement_control_context")
+make_LRE(rs_c_sub, "rule_settlement_control_context", credmass = 0.95)
+make_LRE(rs_c_sub_res, "rule_settlement_control_context", credmass = 0.95)
+
+
+
+make_LRE(dec_f, "decision_freedom_context", credmass = 0.9)
+make_LRE(dec_e, "decision_equality_context", credmass = 0.9)
+make_LRE(dec_c, "decision_control_context", credmass = 0.9)
+make_LRE(int_f, "intermediate_freedom_context", credmass = 0.9)
+make_LRE(int_e, "intermediate_equality_context", credmass = 0.9)
+make_LRE(int_c, "intermediate_control_context", credmass = 0.9)
+make_LRE(com_f, "communication_freedom_context", credmass = 0.9)
+make_LRE(com_e, "communication_equality_context", credmass = 0.9)
+make_LRE(com_c, "communication_control_context", credmass = 0.9)
+make_LRE(rights_f, "rights_freedom_context", credmass = 0.9)
+make_LRE(rights_e, "rights_equality_context", credmass = 0.9)
+make_LRE(rights_c, "rights_control_context", credmass = 0.9)
+make_LRE(rs_f, "rule_settlement_freedom_context", credmass = 0.9)
+make_LRE(rs_e, "rule_settlement_equality_context", credmass = 0.9)
+make_LRE(rs_c, "rule_settlement_control_context", credmass = 0.9)
+
+p2 = make_LRE_single(rs_e, "rule_settlement_equality_context")
+p3 = make_LRE_single(rs_c, "rule_settlement_control_context")
+p4 = make_LRE_single(rights_f, "rights_freedom_context")
+p5 = make_LRE_single(com_f, "communication_freedom_context")
+p6 = make_LRE_single(com_c, "communication_control_context")
+
+p1 = make_LRE_single(int_c, "intermediate_control_context")
+p7 = make_LRE_single(dec_c, "decision_control_context")
+p6 = make_LRE_single(com_c, "communication_control_context")
+
+ggarrange(p7,p1,p6, nrow = 1)

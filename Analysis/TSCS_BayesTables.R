@@ -1,7 +1,7 @@
 ##
 
 make_table = function(model, modellabel, credmass = 0.95) {
-  
+  library(HDInterval)
   table = tidy(model, conf.level = credmass, conf.method = "HPDinterval")  %>% 
     mutate(term = ifelse(grepl("context_wi_lag$", term), "Lag", term),
            term = ifelse(grepl("_lag2$", term), "Lag2", term)) %>% 
@@ -71,7 +71,13 @@ print_table = function(modellist, credmass = 0.95) {
                      "RG F", "RG G", "RG K",
                      "RS F", "RS G", "RS K")
   
-  dust_1 = make_table(modellist[[1]], modellabels[[1]], credmass = credmass)
+  dust_1 = make_table(modellist[[1]], modellabels[[1]], credmass = credmass) 
+  
+  if(any(grepl("Lag2", dust_1$Variable)) == F) {
+    dust_1 = dust_1 %>% 
+      add_row(Variable = "Lag2", `EV F` = NA, .after = 2)
+  }
+  
   for (i in 2:length(modellist)) {
     dust_app = make_table(modellist[[i]], modellabels[[i]], credmass = credmass)
     
@@ -91,13 +97,17 @@ print_table = function(modellist, credmass = 0.95) {
   
   
 }
-
 modellist = list(dec_f, dec_e, dec_c, int_f, int_e, int_c, com_f, com_e, com_c, rights_f, rights_e, rights_c, rs_f, rs_e, rs_c)
 print_table(modellist, credmass = 0.95)
 print_table(modellist, credmass = 0.9)
 
-# Subset
+# Subset without VPN
 modellist_sub = list(dec_f_sub, dec_e_sub, dec_c_sub, int_f_sub, int_e_sub, int_c_sub, com_f_sub, com_e_sub, com_c_sub, rights_f_sub, rights_e_sub, rights_c_sub, rs_f_sub, rs_e_sub, rs_c_sub)
 print_table(modellist_sub, credmass = 0.95)
 print_table(modellist_sub, credmass = 0.9)
+
+# Subset Residuals
+modellist_sub_res = list(dec_f_sub_res, dec_e_sub_res, dec_c_sub_res, int_f_sub_res, int_e_sub_res, int_c_sub_res, com_f_sub_res, com_e_sub_res, com_c_sub_res, rights_f_sub_res, rights_e_sub_res, rights_c_sub_res, rs_f_sub_res, rs_e_sub_res, rs_c_sub_res)
+print_table(modellist_sub_res, credmass = 0.95)
+print_table(modellist_sub_res, credmass = 0.9)
 

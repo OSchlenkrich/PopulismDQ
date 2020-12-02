@@ -62,7 +62,9 @@ DMX_context = DMX %>%
 pop_pres = pop_par_pres %>% 
   select(country_name, pop_start, pop_end) %>% 
   mutate(pop_end = if_else(is.na(pop_start) == F & is.na(pop_end) == T, 2019L, pop_end)) %>% 
-  na.omit() %>% 
+  na.omit() %>%
+  # exclude Argentina 1946-1955
+  filter(pop_start!= 1946) %>% 
   melt(by="country_name") %>% 
   mutate(populist_pres = 1) %>% 
   group_by(country_name) %>% 
@@ -111,7 +113,7 @@ write.csv(DMX_populist %>%
                    populist_prime_minister,
                    populist_pres, 
                    populist_is_gov), 
-          file="Datasets/Populism_v2.csv", 
+          file="Datasets/Populism_v3.csv", 
           fileEncoding="UTF-8",
           row.names = F)
 

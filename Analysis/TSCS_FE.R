@@ -99,7 +99,7 @@ round(confint(TSCS_reg("rule_settlement_control_context", lag=1)[[2]]),3)
 # Check Autocorrelation
 
 
-get_autocorrelation("decision_freedom_context", lag=2)
+get_autocorrelation("decision_freedom_context", lag=1)
 get_autocorrelation("decision_equality_context", lag=1)
 get_autocorrelation("decision_control_context", lag=2)
 
@@ -121,7 +121,7 @@ get_autocorrelation("rule_settlement_control_context", lag=2)
 
 
 # Results
-m1 = TSCS_reg("decision_freedom_context", lag=2)
+m1 = TSCS_reg("decision_freedom_context", lag=1)
 m2 = TSCS_reg("decision_equality_context", lag=1)
 m3 = TSCS_reg("decision_control_context", lag=2)
 
@@ -130,7 +130,7 @@ m5 = TSCS_reg("intermediate_equality_context", lag=1)
 m6 = TSCS_reg("intermediate_control_context", lag=2)
 
 m7 = TSCS_reg("communication_freedom_context", lag=2)
-m8 = TSCS_reg("communication_equality_context", lag=1)
+m8 = TSCS_reg("communication_equality_context", lag=2)
 m9 = TSCS_reg("communication_control_context", lag=2)
 
 m10 = TSCS_reg("rights_freedom_context", lag=2)
@@ -172,6 +172,9 @@ makeTable = function(model, labels) {
 }
 
 modeltable_body = makeTable(modellist[[1]], modellabels[[1]])[[1]]
+if(any(grepl("Lag2", modeltable_body$term)) == F) {
+  modeltable_body = modeltable_body %>%  add_row(term = "Lag2", `EV F` = NA_character_, .after = 2)
+}
 modeltable_foot = makeTable(modellist[[1]], modellabels[[1]])[[2]]
 
 
